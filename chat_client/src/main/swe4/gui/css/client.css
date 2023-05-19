@@ -1,0 +1,112 @@
+.root {
+    -fx-background-color: #f2f2f2;
+}
+
+#root-pane {
+    -fx-padding: 10;
+    -fx-hgap: 10;
+    -fx-vgap: 10;
+    -fx-alignment: top-left;
+}
+
+#header-pane {
+    -fx-spacing: 10;
+    -fx-background-color: white;
+    -fx-padding: 10;
+    -fx-border-radius: 4px;
+    -fx-border-width: 1px;
+    -fx-border-color: #e5e5e5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);
+    -fx-alignment: center;
+}
+
+#header-pane ImageView {
+    -fx-fit-width: 50px;
+    -fx-fit-height: 50px;
+}
+
+#header-pane Text {
+    -fx-text-fill: #212121;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
+
+#message-send-pane {
+    -fx-spacing: 10;
+    -fx-padding: 10;
+}
+
+#message-field {
+    -fx-prompt-text-fill: #BDBDBD;
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-border-width: 1px;
+    -fx-border-color: #e5e5e5;
+}
+
+#send-button {
+    -fx-font-size: 14px;
+    -fx-font-family: "Arial";
+    -fx-text-fill: white;
+    /* padding right/left 16, top/bottom 10 */
+    -fx-padding: 10px 16px;
+    -fx-border-radius: 4px;
+    -fx-background-color: #26FA50;
+}
+
+#send-button:hover {
+    -fx-background-color: #21D5DE;
+}
+
+#options-button {
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-text-fill: #808080;
+    -fx-font-size: 16px;
+    -fx-text-alignment: right;
+    -fx-alignment: center-right;
+}
+
+.add-button {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-color: #26FA50;
+    -fx-text-fill: white;
+    -fx-padding: 8px 16px;
+    -fx-border-radius: 4px;
+}
+
+.add-button:hover {
+    -fx-background-color: #21D5DE;
+}
+
+.toast-pane {
+    -fx-background-color: #333333;
+    -fx-padding: 8px;
+    -fx-background-radius: 8px;
+}
+
+.toast-label {
+    -fx-text-fill: white;
+    -fx-font-size: 32px;
+}
+
+
+#root-pane .list-view {
+    -fx-background-color: white;
+    -fx-border-radius: 4px;
+    -fx-border-width: 1px;
+    -fx-border-color: #e5e5e5;
+}
+
+#root-pane .list-view .list-cell {
+    -fx-text-fill: #212121;
+    -fx-font-size: 14px;
+}
+
+#root-pane .list-view .list-cell:hover {
+    -fx-background-color: #f2f2f2;
+}
