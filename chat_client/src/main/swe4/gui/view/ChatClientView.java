@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import main.swe4.gui.model.Chat;
 import main.swe4.gui.model.Message;
+import main.swe4.gui.model.User;
 
 import java.util.*;
 
@@ -34,7 +35,7 @@ public class ChatClientView extends Application {
 	private ListView<Message> chatArea;
 	private ListView<Chat> chatPane;
 	private final Map<String, Chat> chats = new HashMap<>();
-	private String username;
+	private User user;
 	private String currentChatName;
 	private ImageView chatPicture;
 	private Text chatNameText;
@@ -174,8 +175,8 @@ public class ChatClientView extends Application {
 		dialog.setResultConverter(dialogButton -> {
 			if (dialogButton == createButtonType) {
 				String chatName = chatNameField.getText();
-				chatPane.getItems().addAll(new Chat(chatName, username, null));
-				chats.put(chatName, new Chat(chatName, username, null));
+				chatPane.getItems().addAll(new Chat(chatName, user, null));
+				chats.put(chatName, new Chat(chatName, user, null));
 			}
 			return null;
 		});
@@ -211,12 +212,14 @@ public class ChatClientView extends Application {
 		headerPane.setId("header-pane");
 
 		// Add the user's profile picture
-		ImageView profilePic = new ImageView(new Image("https://via.placeholder.com/50"));
+		ImageView profilePic = new ImageView(user.getPicture());
+		profilePic.setFitHeight(50);
+		profilePic.setFitWidth(50);
 		profilePic.setId("profile-pic");
 		headerPane.getChildren().add(profilePic);
 
 		// Add the user's name
-		Text userName = new Text(username);
+		Text userName = new Text(user.getUsername());
 
 		userName.setId("header-pane");
 		headerPane.getChildren().add(userName);
@@ -230,9 +233,12 @@ public class ChatClientView extends Application {
 		// Create some sample chats
 		Image adminImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("../css/user.png")));
 
-		Chat chat1 = new Chat("Drama Lama", "Admin", adminImage);
-		Chat chat2 = new Chat("The office dudes and dudines", "User 1", adminImage);
-		Chat chat3 = new Chat("Anime Chat", "User 2", adminImage);
+		// create a sample admin user
+		User admin = new User("Admin user", "admin@adminmail.com", adminImage);
+
+		Chat chat1 = new Chat("Drama Lama", admin, adminImage);
+		Chat chat2 = new Chat("The office dudes and dudines", admin, adminImage);
+		Chat chat3 = new Chat("Anime Chat", admin, adminImage);
 
 		chatPane.getItems().addAll(chat1, chat2, chat3);
 		chats.put(chat1.getName(), chat1);
@@ -345,9 +351,9 @@ public class ChatClientView extends Application {
 		// Use the currentUser variable to access the current user details
 		// Return true if the current user is the admin, false otherwise
 		Chat chat = chats.get(chatToBeRemoved);
-		String admin = chat.getAdmin();
+		User admin = chat.getAdmin();
 
-		return username.equals(admin);
+		return user.equals(admin);
 	}
 
 	private void deleteChat(Chat chat) {
@@ -373,9 +379,12 @@ public class ChatClientView extends Application {
 		// create URI string from image file
 		String uri = loadPicture("../css/user.png");
 
-		Message message1 = new Message("User1", "Hello", new Image(uri));
-		Message message2 = new Message("User2", "Hi there", new Image(uri));
-		Message message3 = new Message("User1", "How are you?", new Image(uri));
+		User user1 = new User("User1", "user1@user.com", new Image(uri));
+		User user2 = new User("User2", "user2@user.com,", new Image(uri));
+
+		Message message1 = new Message(user1, "Hello", new Image(uri));
+		Message message2 = new Message(user2, "Hi there", new Image(uri));
+		Message message3 = new Message(user1, "How are you?", new Image(uri));
 
 		chats.get("The office dudes and dudines").addMessage(message1);
 		chats.get("The office dudes and dudines").addMessage(message2);
@@ -395,7 +404,7 @@ public class ChatClientView extends Application {
 					ImageView imageView = new ImageView(item.getPicture());
 					imageView.setFitWidth(25); // Adjust the width as needed
 					imageView.setFitHeight(25);
-					TextFlow textFlow = new TextFlow(new Text(item.getUsername() + ": " + item.getMessage()));
+					TextFlow textFlow = new TextFlow(new Text(item.getUser().getUsername() + ": " + item.getMessage()));
 
 					messagePane.getChildren().addAll(imageView, textFlow);
 					setGraphic(messagePane);
@@ -426,7 +435,7 @@ public class ChatClientView extends Application {
 			} else if (currentChatName == null) {
 				showToast("Please select a chat to send a message");
 			} else {
-				chats.get(currentChatName).addMessage(new Message(username, message, null));
+				chats.get(currentChatName).addMessage(new Message(user, message, user.getPicture()));
 				// reload chat
 				chatArea.getItems().clear();
 				ArrayList<Message> messages = chats.get(currentChatName).getMessages();
@@ -498,7 +507,7 @@ public class ChatClientView extends Application {
 		return uri;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUser(User user) {
+		this.user = user;
 	}
 }

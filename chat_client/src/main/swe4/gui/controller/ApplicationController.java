@@ -2,7 +2,9 @@ package main.swe4.gui.controller;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import main.swe4.gui.model.User;
 import main.swe4.gui.view.ChatClientView;
 import main.swe4.gui.view.LoginView;
 import main.swe4.gui.view.RegisterView;
@@ -56,7 +58,10 @@ public class ApplicationController {
 				if (!(startApp instanceof LoginView loginView)) {
 
 					if (startApp instanceof ChatClientView chatClientView) {
-						chatClientView.setUsername(closeApp.getUsername());
+						String username = closeApp.getUsername();
+						Image profilePicture = new Image(getClass().getResourceAsStream("../css/profilePic.png"));
+						User user = new User(username, username + "@chat.com", profilePicture);
+						chatClientView.setUser(user);
 					}
 
 					startApp.start(new Stage());

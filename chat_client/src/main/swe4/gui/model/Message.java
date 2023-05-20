@@ -3,12 +3,12 @@ package main.swe4.gui.model;
 import javafx.scene.image.Image;
 
 public class Message {
-	private String username;
+	private User user;
 	private String message;
 	private Image picture;
 
-	public Message(String username, String message, Image picture) {
-		this.username = username;
+	public Message(User username, String message, Image picture) {
+		this.user = username;
 		this.message = message;
 
 		// TODO: What did i do here?
@@ -17,8 +17,8 @@ public class Message {
 		this.picture = picture;
 	}
 
-	public String getUsername() {
-		return username;
+	public User getUser() {
+		return user;
 	}
 
 	public String getMessage() {
