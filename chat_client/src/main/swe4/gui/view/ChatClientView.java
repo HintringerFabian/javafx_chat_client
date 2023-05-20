@@ -231,7 +231,7 @@ public class ChatClientView extends Application {
 		VBox.setVgrow(chatPane, Priority.ALWAYS);
 
 		// Create some sample chats
-		Image adminImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("../css/user.png")));
+		Image adminImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("../images/user.png")));
 
 		// create a sample admin user
 		User admin = new User("Admin user", "admin@adminmail.com", adminImage);
@@ -377,7 +377,7 @@ public class ChatClientView extends Application {
 
 		// Add some sample messages
 		// create URI string from image file
-		String uri = loadPicture("../css/user.png");
+		String uri = loadPicture("../images/user.png");
 
 		User user1 = new User("User1", "user1@user.com", new Image(uri));
 		User user2 = new User("User2", "user2@user.com,", new Image(uri));

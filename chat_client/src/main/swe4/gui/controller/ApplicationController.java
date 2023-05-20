@@ -59,7 +59,7 @@ public class ApplicationController {
 
 					if (startApp instanceof ChatClientView chatClientView) {
 						String username = closeApp.getUsername();
-						Image profilePicture = new Image(getClass().getResourceAsStream("../css/profilePic.png"));
+						Image profilePicture = new Image(getClass().getResourceAsStream("../images/profilePic.png"));
 						User user = new User(username, username + "@chat.com", profilePicture);
 						chatClientView.setUser(user);
 					}
