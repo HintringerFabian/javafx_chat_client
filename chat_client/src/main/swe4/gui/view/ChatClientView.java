@@ -42,9 +42,13 @@ public class ChatClientView extends Application {
 	private HBox userPane;
 	private String chatToBeRemoved;
 
-	MenuItem chatEditMenuItem;
-	MenuItem chatDeleteMenuItem;
-	MenuItem banUserMenuItem;
+	private MenuItem chatEditMenuItem;
+	private MenuItem chatDeleteMenuItem;
+	private MenuItem banUserMenuItem;
+	private Button lensButton;
+	private TextField searchField;
+	private VBox chatsPane;
+
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -185,24 +189,49 @@ public class ChatClientView extends Application {
 		dialog.showAndWait();
 	}
 
-	private HBox getChatHeaderPane() {
+	private HBox getChatHeaderPane(Image image, String name) {
+		// TODO code duplication, maybe with an parameter we can unite the two headerpane methods?
+
 		HBox headerPane = new HBox();
 		headerPane.setPadding(new Insets(10));
 		headerPane.setId("header-pane");
 
 		// Add the user's profile picture
-		chatPicture = new ImageView();
+		chatPicture = new ImageView(image);
 		chatPicture.setId("profile-pic");
-		// TODO code duplication
 		chatPicture.setFitHeight(50);
 		chatPicture.setFitWidth(50);
-		headerPane.getChildren().add(chatPicture);
 
 		// Add the user's name
-		chatNameText = new Text("");
+		if (name == null) {
+			name = "";
+		}
+		chatNameText = new Text(name);
+		chatNameText.setId("header-text");
 
-		chatNameText.setId("header-pane");
-		headerPane.getChildren().add(chatNameText);
+		// Add the lens button
+		lensButton = new Button();
+		lensButton.setId("lens-button");
+		String lensPath = loadPicture("../images/lens.png");
+		var lensImageView = new ImageView(new Image(lensPath));
+		lensImageView.setFitHeight(20);
+		lensImageView.setFitWidth(20);
+		lensButton.setGraphic(lensImageView);
+		lensButton.setOnAction(event -> {
+			searchField = new TextField();
+			searchField.setId("search-field");
+
+			var children = headerPane.getChildren();
+
+			if (children.contains(searchField)) {
+				children.remove(searchField);
+			} else {
+				children.add(searchField);
+			}
+		});
+		lensButton.setVisible(!name.equals(""));
+		headerPane.getChildren().addAll(chatPicture, chatNameText, lensButton);
+
 		return headerPane;
 	}
 
@@ -314,7 +343,14 @@ public class ChatClientView extends Application {
 
 		// Add event handler to handle chat selection
 		chatPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue != null) {
+
+
+			if (newValue != null && !newValue.equals(oldValue)) {
+				userPane = getChatHeaderPane(newValue.getImage(), newValue.getName());
+
+				chatsPane.getChildren().remove(0);
+				chatsPane.getChildren().add(0, userPane);
+
 				chatArea.getItems().clear();
 
 				// TODO pull into method
@@ -322,23 +358,6 @@ public class ChatClientView extends Application {
 				for (Message message : messages) {
 					chatArea.getItems().add(message);
 				}
-
-				currentChatName = newValue.getName();
-				// remove old header
-				ObservableList<Node> children = userPane.getChildren();
-
-				System.out.println("Children: " + children.size());
-
-				children.removeAll(chatPicture, chatNameText);
-
-				chatPicture = new ImageView(newValue.getImage());
-				chatPicture.setId("profile-pic");
-				chatPicture.setFitHeight(50);
-				chatPicture.setFitWidth(50);
-				chatNameText = new Text(currentChatName);
-				chatNameText.setId("header-pane");
-
-				children.addAll(chatPicture, chatNameText);
 
 				System.out.println("Selected chat: " + newValue.getName());
 			}
@@ -370,7 +389,7 @@ public class ChatClientView extends Application {
 	}
 
 	private VBox createChatPane() {
-		userPane = getChatHeaderPane();
+		userPane = getChatHeaderPane(null, null);
 
 		chatArea = new ListView<>();
 		VBox.setVgrow(chatArea, Priority.ALWAYS);
@@ -414,7 +433,7 @@ public class ChatClientView extends Application {
 
 		HBox messageSendPane = createMessageSendPane();
 
-		VBox chatsPane = new VBox(userPane, chatArea, messageSendPane);
+		chatsPane = new VBox(userPane, chatArea, messageSendPane);
 		GridPane.setVgrow(chatsPane, Priority.ALWAYS);
 
 		return chatsPane;
