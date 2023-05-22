@@ -221,9 +221,20 @@ public class ChatClientView extends Application {
 			searchField = new TextField();
 			searchField.setId("search-field");
 
+			searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+				chatArea.getItems().clear();
+
+				for (Message message : chats.get(currentChatName).getMessages()) {
+					if (message.getMessage().contains(newValue)) {
+						chatArea.getItems().add(message);
+					}
+				}
+			});
+
 			var children = headerPane.getChildren();
 
 			if (children.contains(searchField)) {
+				searchField.clear();
 				children.remove(searchField);
 			} else {
 				children.add(searchField);
@@ -358,6 +369,8 @@ public class ChatClientView extends Application {
 				for (Message message : messages) {
 					chatArea.getItems().add(message);
 				}
+
+				currentChatName = newValue.getName();
 
 				System.out.println("Selected chat: " + newValue.getName());
 			}
