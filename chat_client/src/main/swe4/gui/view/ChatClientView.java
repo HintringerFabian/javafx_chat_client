@@ -4,7 +4,9 @@ import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
+import javafx.beans.value.ChangeListener;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
@@ -45,8 +47,8 @@ public class ChatClientView extends Application {
 	private MenuItem chatEditMenuItem;
 	private MenuItem chatDeleteMenuItem;
 	private MenuItem banUserMenuItem;
-	private Button lensButton;
-	private TextField searchField;
+	private Button lensButton = new Button();
+	private TextField searchField = new TextField();
 	private VBox chatsPane;
 
 
@@ -124,7 +126,7 @@ public class ChatClientView extends Application {
 
 		// Set the action handler for the button
 		addButton.setOnAction(event -> {
-			// Handle the button click event
+			// TODO Handle the button click event
 			openNewChatPopup();
 		});
 
@@ -176,6 +178,7 @@ public class ChatClientView extends Application {
 		Platform.runLater(chatNameField::requestFocus);
 
 		// Convert the result to a chat object when the create button is clicked
+		// TODO Controller
 		dialog.setResultConverter(dialogButton -> {
 			if (dialogButton == createButtonType) {
 				String chatName = chatNameField.getText();
@@ -210,40 +213,43 @@ public class ChatClientView extends Application {
 		chatNameText.setId("header-text");
 
 		// Add the lens button
-		lensButton = new Button();
 		lensButton.setId("lens-button");
 		String lensPath = loadPicture("../images/lens.png");
 		var lensImageView = new ImageView(new Image(lensPath));
 		lensImageView.setFitHeight(20);
 		lensImageView.setFitWidth(20);
+
+		searchField.setId("search-field");
+
 		lensButton.setGraphic(lensImageView);
-		lensButton.setOnAction(event -> {
-			searchField = new TextField();
-			searchField.setId("search-field");
-
-			searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-				chatArea.getItems().clear();
-
-				for (Message message : chats.get(currentChatName).getMessages()) {
-					if (message.getMessage().contains(newValue)) {
-						chatArea.getItems().add(message);
-					}
-				}
-			});
-
-			var children = headerPane.getChildren();
-
-			if (children.contains(searchField)) {
-				searchField.clear();
-				children.remove(searchField);
-			} else {
-				children.add(searchField);
-			}
-		});
 		lensButton.setVisible(!name.equals(""));
 		headerPane.getChildren().addAll(chatPicture, chatNameText, lensButton);
 
 		return headerPane;
+	}
+
+	public void setMessageSearchAction(ChangeListener<String> listener) {
+		searchField.textProperty().addListener(listener);
+	}
+
+	public void setLensButtonAction(EventHandler<ActionEvent> handler) {
+		lensButton.setOnAction(handler);
+	}
+
+	public String getCurrentChatName() {
+		return currentChatName;
+	}
+
+	public ListView<Message> getChatArea() {
+		return chatArea;
+	}
+
+	public TextField getSearchField() {
+		return searchField;
+	}
+
+	public HBox getUserPane() {
+		return userPane;
 	}
 
 	private HBox getHeaderPane() {
@@ -485,7 +491,7 @@ public class ChatClientView extends Application {
 		return messageSendPane;
 	}
 
-	private void showToast(String message) {
+	public void showToast(String message) {
 		// Create a label for the toast message
 		Label toastLabel = new Label(message);
 		toastLabel.getStyleClass().add("toast-label");

@@ -2,23 +2,35 @@ package main.swe4.gui.controller;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import main.swe4.gui.model.FakeDatabase;
+import main.swe4.gui.model.Message;
 import main.swe4.gui.model.User;
 import main.swe4.gui.view.ChatClientView;
 import main.swe4.gui.view.LoginView;
 import main.swe4.gui.view.RegisterView;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class ApplicationController {
 	// TODO: in next ue add chat controller and login/register controller
 	LoginView loginView;
 	RegisterView registerView;
 	ChatClientView chatClientView;
+	FakeDatabase fakeDatabase;
 
 	public ApplicationController(LoginView loginView, RegisterView registerView, ChatClientView chatClientView) {
 		this.loginView = loginView;
 		this.registerView = registerView;
 		this.chatClientView = chatClientView;
+		this.fakeDatabase = FakeDatabase.getInstance();
 	}
 
 	public void run() {
@@ -32,10 +44,43 @@ public class ApplicationController {
 			registerView.start(new Stage());
 			registerView.hide();
 
+			chatClientView.setMessageSearchAction(this::messageSearchAction);
+			chatClientView.setLensButtonAction(this::lensButtonAction);
+
 			loginView.start(new Stage());
 		} catch (Exception e) {
 			System.err.println("Error starting login view: " + e.getMessage());
 		}
+	}
+
+	// TODO (optional): split to multiple controllers
+	private void messageSearchAction(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+		var currentChatName = chatClientView.getCurrentChatName();
+		var currentChat = fakeDatabase.getChat(currentChatName);
+		var messages = currentChat.getMessages();
+
+		var filteredMessages = messages.stream()
+			.filter(message -> message.getMessage().contains(newValue))
+			.collect(Collectors.toCollection(ArrayList::new));
+
+		updateMessages(filteredMessages, chatClientView.getChatArea());
+	}
+
+	private void lensButtonAction(ActionEvent event) {
+		var headerPaneItems = chatClientView.getUserPane().getChildren();
+		var searchField = chatClientView.getSearchField();
+
+		if (headerPaneItems.contains(searchField)) {
+			searchField.clear();
+			headerPaneItems.remove(searchField);
+		} else {
+			headerPaneItems.add(searchField);
+		}
+	}
+
+	private void updateMessages(ArrayList<Message> messages, ListView<Message> chatArea) {
+		chatArea.getItems().clear();
+		chatArea.getItems().addAll(messages);
 	}
 
 	private void handleLogin() {
