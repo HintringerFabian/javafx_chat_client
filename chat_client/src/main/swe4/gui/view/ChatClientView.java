@@ -34,10 +34,11 @@ public class ChatClientView extends Application {
 
 	private Stage primaryStage;
 	private TextField messageField;
-	private Button sendButton;
+	Image profilePicture = new Image(getClass().getResourceAsStream("../images/profilePic.png"));
+	private Button sendButton = new Button("Send");
 	private ListView<Message> chatArea;
 	private ListView<Chat> chatPane = new ListView<>();
-	private final Map<String, Chat> chats = new HashMap<>();
+	private ArrayList<Chat> chats;
 	private User user;
 	private String currentChatName;
 	private ImageView chatPicture;
@@ -138,8 +139,7 @@ public class ChatClientView extends Application {
 
 		// Set the action handler for the button
 		addButton.setOnAction(event -> {
-			// TODO Handle the button click event
-			openNewChatPopup();
+			createChatDialog.showAndWait();
 		});
 
 		// Create a separate HBox for the button
@@ -201,11 +201,6 @@ public class ChatClientView extends Application {
 
 	public Node getChatCreateButtonNode() {
 		return chatCreateButtonNode;
-	}
-
-	private void openNewChatPopup() {
-		// Show the dialog and process the result
-		createChatDialog.showAndWait();
 	}
 
 	public void setCreateChatNameValidation(ChangeListener<String> listener) {
@@ -295,20 +290,9 @@ public class ChatClientView extends Application {
 	private void createChatSelectionPane(ListView<Chat> chatPane) {
 		VBox.setVgrow(chatPane, Priority.ALWAYS);
 
-		// Create some sample chats
-		Image adminImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("../images/user.png")));
-
-		// create a sample admin user
-		User admin = new User("Admin user", "admin@adminmail.com", adminImage);
-
-		Chat chat1 = new Chat("Drama Lama", admin, adminImage);
-		Chat chat2 = new Chat("The office dudes and dudines", admin, adminImage);
-		Chat chat3 = new Chat("Anime Chat", admin, adminImage);
-
-		chatPane.getItems().addAll(chat1, chat2, chat3);
-		chats.put(chat1.getName(), chat1);
-		chats.put(chat2.getName(), chat2);
-		chats.put(chat3.getName(), chat3);
+		for (var chat : chats) {
+			chatPane.getItems().add(chat);
+		}
 
 		// Customize the appearance of each list cell
 		chatPane.setCellFactory(param -> new ListCell<>() {
@@ -402,21 +386,6 @@ public class ChatClientView extends Application {
 		chatArea = new ListView<>();
 		VBox.setVgrow(chatArea, Priority.ALWAYS);
 
-		// Add some sample messages
-		// create URI string from image file
-		String uri = loadPicture("../images/user.png");
-
-		User user1 = new User("User1", "user1@user.com", new Image(uri));
-		User user2 = new User("User2", "user2@user.com,", new Image(uri));
-
-		Message message1 = new Message(user1, "Hello", new Image(uri));
-		Message message2 = new Message(user2, "Hi there", new Image(uri));
-		Message message3 = new Message(user1, "How are you?", new Image(uri));
-
-		chats.get("The office dudes and dudines").addMessage(message1);
-		chats.get("The office dudes and dudines").addMessage(message2);
-		chats.get("Drama Lama").addMessage(message3);
-
 		// Customize the appearance of each list cell
 		chatArea.setCellFactory(param -> new ListCell<>() {
 			@Override
@@ -451,34 +420,22 @@ public class ChatClientView extends Application {
 		messageField = new TextField();
 		messageField.setId("message-field");
 		messageField.setPromptText("Enter your message here");
-
-		sendButton = new Button("Send");
+		
 		sendButton.setId("send-button");
-		// TODO Thats functionality for the controller
-		sendButton.setOnAction(event -> {
-			String message = messageField.getText();
-
-			if (message.isEmpty()) {
-				showToast("Please enter a message");
-			} else if (currentChatName == null) {
-				showToast("Please select a chat to send a message");
-			} else {
-				chats.get(currentChatName).addMessage(new Message(user, message, user.getPicture()));
-				// reload chat
-				chatArea.getItems().clear();
-				ArrayList<Message> messages = chats.get(currentChatName).getMessages();
-				for (Message m : messages) {
-					chatArea.getItems().add(m);
-				}
-				messageField.clear();
-			}
-		});
 
 		HBox messageSendPane = new HBox(messageField, sendButton);
 		messageSendPane.setId("message-send-pane");
 		HBox.setHgrow(messageField, Priority.ALWAYS);
 
 		return messageSendPane;
+	}
+
+	public void setSendButtonAction(Runnable action) {
+		sendButton.setOnAction(event -> action.run());
+	}
+
+	public TextField getMessageField() {
+		return messageField;
 	}
 
 	public void showToast(String message) {
@@ -537,5 +494,9 @@ public class ChatClientView extends Application {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public void setChats(ArrayList<Chat> chats) {
+		this.chats = chats;
 	}
 }

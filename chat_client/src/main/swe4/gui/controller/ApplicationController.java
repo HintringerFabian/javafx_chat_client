@@ -49,10 +49,13 @@ public class ApplicationController implements EventListener {
 			chatClientView.setChatPaneClickEvent(this::chatPaneClickEvent);
 			chatClientView.setCreateChatNameValidation(this::newChatNameValidation);
 			chatClientView.setCreateChatButtonAction(this::createChatButtonAction);
+			chatClientView.setSendButtonAction(this::sendButtonAction);
 
 			loginView.start(new Stage());
 		} catch (Exception e) {
 			System.err.println("Error starting login view: " + e.getMessage());
+			System.out.println();
+			e.printStackTrace();
 		}
 	}
 
@@ -73,6 +76,24 @@ public class ApplicationController implements EventListener {
 	@Override
 	public void handleBanUser(Chat chat) {
 
+	}
+
+	private void sendButtonAction() {
+		var messageField = chatClientView.getMessageField();
+		var message = messageField.getText();
+		var chat = database.getChat(chatClientView.getCurrentChatName());
+
+		if (message.isEmpty()) {
+			chatClientView.showToast("Message cannot be empty");
+		} else if (chat == null) {
+			chatClientView.showToast("No chat selected");
+		} else {
+			var newMessage = new Message(currentUser, message, currentUser.getPicture());
+			chat.addMessage(newMessage);
+
+			messageField.clear();
+			updateMessages(chat.getMessages());
+		}
 	}
 
 	private void createChatButtonAction() {
@@ -203,10 +224,13 @@ public class ApplicationController implements EventListener {
 
 					if (startApp instanceof ChatClientView chatClientView) {
 						String username = closeApp.getUsername();
-						Image profilePicture = new Image(getClass().getResourceAsStream("../images/profilePic.png"));
-						currentUser = new User(username, username + "@chat.com", profilePicture);
+						currentUser = database.getUser(username);
 
 						chatClientView.setUser(currentUser);
+
+						var chats = database.getChatsFor(currentUser);
+
+						chatClientView.setChats(chats);
 					}
 
 					startApp.start(new Stage());
