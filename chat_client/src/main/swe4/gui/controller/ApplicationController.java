@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import main.swe4.gui.model.*;
 import main.swe4.gui.view.ChatClientView;
@@ -88,7 +87,7 @@ public class ApplicationController implements EventListener {
 		} else if (chat == null) {
 			chatClientView.showToast("No chat selected");
 		} else {
-			var newMessage = new Message(currentUser, message, currentUser.getPicture());
+			var newMessage = new Message(currentUser, message);
 			chat.addMessage(newMessage);
 
 			messageField.clear();
@@ -103,10 +102,17 @@ public class ApplicationController implements EventListener {
 		var chats = database.getChats();
 		var chatName = createChatNameField.getText();
 
-		var newChat = new Chat(chatName, currentUser, null);
+		Chat newChat;
+		if (chats.containsKey(chatName)) {
+			chatClientView.showToast("Chat already exists, you will be added to it");
+			newChat = chats.get(chatName);
+			newChat.addUser(currentUser);
+		} else {
+			newChat = new Chat(chatName, currentUser, null);
+			chats.put(chatName, newChat);
+		}
 
 		chatPane.getItems().add(newChat);
-		chats.put(chatName, newChat);
 
 		createChatNameField.clear();
 		createChatButton.setDisable(true);
@@ -142,15 +148,11 @@ public class ApplicationController implements EventListener {
 	}
 
 	private void newChatNameValidation(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-		var chats = database.getChats();
-
-		var alreadyExists = chats.containsKey(newValue);
 		var empty = newValue.trim().isEmpty();
 
-		var valid = !alreadyExists && !empty;
 		var chatCreateButton = chatClientView.getChatCreateButtonNode();
 
-		chatCreateButton.setDisable(!valid);
+		chatCreateButton.setDisable(empty);
 	}
 
 	private void chatPaneClickEvent(ObservableValue<? extends Chat> obs, Chat oldValue, Chat newValue) {

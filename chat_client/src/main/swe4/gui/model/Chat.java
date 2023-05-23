@@ -12,18 +12,17 @@ public class Chat {
 	private ArrayList<User> users;
 	private ArrayList<User> bannedUsers;
 
-	public Chat(String name, User admin, Image image, ArrayList<User> users) {
+	public Chat(String name, User admin, ArrayList<User> users) {
 		this.name = name;
 		this.admin = admin;
-		this.image = image;
 		this.users = users;
 
 		messages = new ArrayList<>();
 		bannedUsers = new ArrayList<>();
 	}
 
-	public Chat(String name, User admin, Image image) {
-		this(name, admin, image, new ArrayList<>());
+	public Chat(String name, User admin) {
+		this(name, admin, new ArrayList<>());
 	}
 
 	public String getName() {

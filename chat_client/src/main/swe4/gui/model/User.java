@@ -5,26 +5,20 @@ import javafx.scene.image.Image;
 public class User {
 	private String username;
 	//private String password;
-	private String email;
-	private Image picture;
+	private String fullName;
 
-	public User(String username, String email, Image picture) {
+	public User(String username, String email) {
 		this.username = username;
 		//this.password = password;
-		this.email = email;
-		this.picture = picture;
+		this.fullName = email;
 	}
 
 	public String getUsername() {
 		return username;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public Image getPicture() {
-		return picture;
+	public String getFullName() {
+		return fullName;
 	}
 
 	@Override
@@ -33,6 +27,6 @@ public class User {
 			return false;
 		}
 
-		return this.email.equals(otherUser.email);
+		return this.fullName.equals(otherUser.fullName);
 	}
 }

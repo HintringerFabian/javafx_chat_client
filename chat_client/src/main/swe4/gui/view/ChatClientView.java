@@ -157,7 +157,7 @@ public class ChatClientView extends Application {
 	private Dialog<ButtonType> createChatCreationDialog() {
 		Dialog<ButtonType> dialog = new Dialog<>();
 		dialog.setTitle("New Chat");
-		dialog.setHeaderText("Create a New Chat");
+		dialog.setHeaderText("Create or enter a chat");
 
 		// Create the chat name input field
 
@@ -271,13 +271,6 @@ public class ChatClientView extends Application {
 		HBox headerPane = new HBox();
 		headerPane.setPadding(new Insets(10));
 		headerPane.setId("header-pane");
-
-		// Add the user's profile picture
-		ImageView profilePic = new ImageView(user.getPicture());
-		profilePic.setFitHeight(50);
-		profilePic.setFitWidth(50);
-		profilePic.setId("profile-pic");
-		headerPane.getChildren().add(profilePic);
 
 		// Add the user's name
 		Text userName = new Text(user.getUsername());
@@ -397,12 +390,9 @@ public class ChatClientView extends Application {
 				} else {
 					// Create a custom layout for each chat message
 					VBox messagePane = new VBox();
-					ImageView imageView = new ImageView(item.getPicture());
-					imageView.setFitWidth(25); // Adjust the width as needed
-					imageView.setFitHeight(25);
 					TextFlow textFlow = new TextFlow(new Text(item.getUser().getUsername() + ": " + item.getMessage()));
 
-					messagePane.getChildren().addAll(imageView, textFlow);
+					messagePane.getChildren().addAll(textFlow);
 					setGraphic(messagePane);
 				}
 			}
