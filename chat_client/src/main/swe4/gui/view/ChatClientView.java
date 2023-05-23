@@ -163,6 +163,7 @@ public class ChatClientView extends Application {
 		// TODO Controller
 		chatNameField.textProperty().addListener((observable, oldValue, newValue) -> {
 			boolean isChatNameValid = !newValue.trim().isEmpty();
+			// TODO think if that is view or controller
 			createButton.setDisable(!isChatNameValid);
 		});
 
@@ -179,7 +180,7 @@ public class ChatClientView extends Application {
 		Platform.runLater(chatNameField::requestFocus);
 
 		// Convert the result to a chat object when the create button is clicked
-		// TODO Controller
+		// TODO Thats functionality, not view
 		dialog.setResultConverter(dialogButton -> {
 			if (dialogButton == createButtonType) {
 				String chatName = chatNameField.getText();
@@ -326,10 +327,14 @@ public class ChatClientView extends Application {
 					// Add more menu items as needed
 
 					// Set the action handlers for menu items
+					// TODO This is functionality for the controller
+					// but think about how to implement it because we need the "item" variable
 					chatEditMenuItem.setOnAction(event -> {
 						// TODO This will be added in the next ue
 					});
 
+					// TODO This is functionality for the controller
+					// but think about how to implement it because we need the "item" variable
 					chatDeleteMenuItem.setOnAction(event -> {
 						chatToBeRemoved = item.getName();
 						if (isCurrentUserAdmin()) {
@@ -339,6 +344,8 @@ public class ChatClientView extends Application {
 						}
 					});
 
+					// TODO This is functionality for the controller
+					// but think about how to implement it because we need the "item" variable
 					banUserMenuItem.setOnAction(event -> {
 						// TODO This will be added in the next ue
 						System.out.println("Ban user");
@@ -378,6 +385,7 @@ public class ChatClientView extends Application {
 		chatPane.getSelectionModel().selectedItemProperty().addListener(listener);
 	}
 
+	// TODO Thats functionality for the controller
 	private boolean isCurrentUserAdmin() {
 		// Use the currentUser variable to access the current user details
 		// Return true if the current user is the admin, false otherwise
@@ -387,6 +395,7 @@ public class ChatClientView extends Application {
 		return user.equals(admin);
 	}
 
+	// TODO Thats functionality for the controller
 	private void deleteChat(Chat chat) {
 		// TODO Add implementation for deleting the chat
 		// Use the chat parameter to identify the chat to be deleted
@@ -458,6 +467,7 @@ public class ChatClientView extends Application {
 
 		sendButton = new Button("Send");
 		sendButton.setId("send-button");
+		// TODO Thats functionality for the controller
 		sendButton.setOnAction(event -> {
 			String message = messageField.getText();
 
