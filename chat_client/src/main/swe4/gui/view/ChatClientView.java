@@ -56,7 +56,9 @@ public class ChatClientView extends Application {
 	// chat creation variables
 	private TextField createChatNameField = new TextField();
 	private Dialog<ButtonType> createChatDialog = createChatCreationDialog();
-	private Node chatCreateButton;
+	private Node chatCreateButtonNode;
+	private ButtonType chatCreateButton;
+
 
 	public void setEventListener(EventListener listener) {
 		this.eventListener = listener;
@@ -73,7 +75,7 @@ public class ChatClientView extends Application {
 		// Create a new Scene and set it on the primary stage
 		Scene scene = new Scene(chatUI, 1080, 720);
 
-		stage.setOnCloseRequest(evt -> {
+		stage.setOnCloseRequest(event -> {
 			// allow user to decide between yes and no
 			Alert alert = new Alert(
 					Alert.AlertType.CONFIRMATION,
@@ -87,7 +89,7 @@ public class ChatClientView extends Application {
 
 			if (ButtonType.NO.equals(result)) {
 				// consume event i.e. ignore close request
-				evt.consume();
+				event.consume();
 			}
 		});
 
@@ -162,13 +164,13 @@ public class ChatClientView extends Application {
 		createChatNameField.setPromptText("Enter chat name");
 
 		// Create the dialog buttons
-		ButtonType createButtonType = new ButtonType("Create", ButtonBar.ButtonData.OK_DONE);
-		dialog.getDialogPane().getButtonTypes().addAll(createButtonType, ButtonType.CANCEL);
+		chatCreateButton = new ButtonType("Create", ButtonBar.ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().addAll(chatCreateButton, ButtonType.CANCEL);
 
 		// Enable/disable the create button based on input validation
 
-		chatCreateButton = dialog.getDialogPane().lookupButton(createButtonType);
-		chatCreateButton.setDisable(true);
+		chatCreateButtonNode = dialog.getDialogPane().lookupButton(chatCreateButton);
+		chatCreateButtonNode.setDisable(true);
 
 		// Set the dialog content
 		GridPane grid = new GridPane();
@@ -182,26 +184,23 @@ public class ChatClientView extends Application {
 		// Request focus on the chat name field by default
 		Platform.runLater(createChatNameField::requestFocus);
 
-		// Convert the result to a chat object when the create button is clicked
-		// TODO Thats functionality, not view
-		dialog.setResultConverter(dialogButton -> {
-			if (dialogButton == createButtonType) {
-				String chatName = createChatNameField.getText();
-
-				chatPane.getItems().addAll(new Chat(chatName, user, null));
-				chats.put(chatName, new Chat(chatName, user, null));
-
-				createChatNameField.clear();
-				chatCreateButton.setDisable(true);
-			}
-			return null;
-		});
-
 		return dialog;
 	}
 
-	public Node getChatCreateButton() {
-		return chatCreateButton;
+	public void setCreateChatButtonAction(Runnable action) {
+		createChatDialog.setResultConverter(dialogButton -> {
+			if (dialogButton == chatCreateButton) {
+				action.run();
+			}
+			return null;
+		});
+	}
+	public TextField getCreateChatNameField() {
+		return createChatNameField;
+	}
+
+	public Node getChatCreateButtonNode() {
+		return chatCreateButtonNode;
 	}
 
 	private void openNewChatPopup() {
@@ -396,18 +395,6 @@ public class ChatClientView extends Application {
 	public void setChatPaneClickEvent(ChangeListener<Chat> listener) {
 		chatPane.getSelectionModel().selectedItemProperty().addListener(listener);
 	}
-
-	// TODO Thats functionality for the controller
-	private boolean isCurrentUserAdmin() {
-		// Use the currentUser variable to access the current user details
-		// Return true if the current user is the admin, false otherwise
-		Chat chat = chats.get(chatToBeRemoved);
-		User admin = chat.getAdmin();
-
-		return user.equals(admin);
-	}
-
-
 
 	private VBox createChatPane() {
 		userPane = createChatHeaderPane(null, null);

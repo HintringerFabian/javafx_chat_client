@@ -48,6 +48,7 @@ public class ApplicationController implements EventListener {
 			chatClientView.setLensButtonAction(this::lensButtonAction);
 			chatClientView.setChatPaneClickEvent(this::chatPaneClickEvent);
 			chatClientView.setCreateChatNameValidation(this::newChatNameValidation);
+			chatClientView.setCreateChatButtonAction(this::createChatButtonAction);
 
 			loginView.start(new Stage());
 		} catch (Exception e) {
@@ -72,6 +73,22 @@ public class ApplicationController implements EventListener {
 	@Override
 	public void handleBanUser(Chat chat) {
 
+	}
+
+	private void createChatButtonAction() {
+		var createChatNameField = chatClientView.getCreateChatNameField();
+		var createChatButton = chatClientView.getChatCreateButtonNode();
+		var chatPane = chatClientView.getChatPane();
+		var chats = database.getChats();
+		var chatName = createChatNameField.getText();
+
+		var newChat = new Chat(chatName, currentUser, null);
+
+		chatPane.getItems().add(newChat);
+		chats.put(chatName, newChat);
+
+		createChatNameField.clear();
+		createChatButton.setDisable(true);
 	}
 
 	// TODO Thats functionality for the controller
@@ -110,7 +127,7 @@ public class ApplicationController implements EventListener {
 		var empty = newValue.trim().isEmpty();
 
 		var valid = !alreadyExists && !empty;
-		var chatCreateButton = chatClientView.getChatCreateButton();
+		var chatCreateButton = chatClientView.getChatCreateButtonNode();
 
 		chatCreateButton.setDisable(!valid);
 	}
