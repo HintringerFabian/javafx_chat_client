@@ -47,6 +47,7 @@ public class ApplicationController implements EventListener {
 			chatClientView.setMessageSearchAction(this::messageSearchAction);
 			chatClientView.setLensButtonAction(this::lensButtonAction);
 			chatClientView.setChatPaneClickEvent(this::chatPaneClickEvent);
+			chatClientView.setCreateChatNameValidation(this::newChatNameValidation);
 
 			loginView.start(new Stage());
 		} catch (Exception e) {
@@ -100,6 +101,18 @@ public class ApplicationController implements EventListener {
 		var chatAdmin = chat.getAdmin();
 
 		return currentUser.equals(chatAdmin);
+	}
+
+	private void newChatNameValidation(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+		var chats = database.getChats();
+
+		var alreadyExists = chats.containsKey(newValue);
+		var empty = newValue.trim().isEmpty();
+
+		var valid = !alreadyExists && !empty;
+		var chatCreateButton = chatClientView.getChatCreateButton();
+
+		chatCreateButton.setDisable(!valid);
 	}
 
 	private void chatPaneClickEvent(ObservableValue<? extends Chat> obs, Chat oldValue, Chat newValue) {

@@ -52,7 +52,11 @@ public class ChatClientView extends Application {
 	private TextField searchField = new TextField();
 	private VBox chatsPane;
 	private EventListener eventListener;
+
+	// chat creation variables
 	private TextField createChatNameField = new TextField();
+	private Dialog<ButtonType> createChatDialog = createChatCreationDialog();
+	private Node chatCreateButton;
 
 	public void setEventListener(EventListener listener) {
 		this.eventListener = listener;
@@ -148,7 +152,7 @@ public class ChatClientView extends Application {
 		return pane;
 	}
 
-	private void openNewChatPopup() {
+	private Dialog<ButtonType> createChatCreationDialog() {
 		Dialog<ButtonType> dialog = new Dialog<>();
 		dialog.setTitle("New Chat");
 		dialog.setHeaderText("Create a New Chat");
@@ -162,16 +166,9 @@ public class ChatClientView extends Application {
 		dialog.getDialogPane().getButtonTypes().addAll(createButtonType, ButtonType.CANCEL);
 
 		// Enable/disable the create button based on input validation
-		Node createButton = dialog.getDialogPane().lookupButton(createButtonType);
-		createButton.setDisable(true);
 
-		// Validate the chat name field and admin selection
-		// TODO Controller
-		createChatNameField.textProperty().addListener((observable, oldValue, newValue) -> {
-			boolean isChatNameValid = !newValue.trim().isEmpty();
-			// TODO think if that is view or controller
-			createButton.setDisable(!isChatNameValid);
-		});
+		chatCreateButton = dialog.getDialogPane().lookupButton(createButtonType);
+		chatCreateButton.setDisable(true);
 
 		// Set the dialog content
 		GridPane grid = new GridPane();
@@ -190,18 +187,30 @@ public class ChatClientView extends Application {
 		dialog.setResultConverter(dialogButton -> {
 			if (dialogButton == createButtonType) {
 				String chatName = createChatNameField.getText();
+
 				chatPane.getItems().addAll(new Chat(chatName, user, null));
 				chats.put(chatName, new Chat(chatName, user, null));
+
+				createChatNameField.clear();
+				chatCreateButton.setDisable(true);
 			}
 			return null;
 		});
 
-		// Show the dialog and process the result
-		dialog.showAndWait();
+		return dialog;
 	}
 
-	public void setCreateChatNameValidation(
+	public Node getChatCreateButton() {
+		return chatCreateButton;
+	}
 
+	private void openNewChatPopup() {
+		// Show the dialog and process the result
+		createChatDialog.showAndWait();
+	}
+
+	public void setCreateChatNameValidation(ChangeListener<String> listener) {
+		createChatNameField.textProperty().addListener(listener);
 	}
 
 	public HBox createChatHeaderPane(Image image, String name) {
