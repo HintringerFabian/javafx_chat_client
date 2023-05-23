@@ -26,4 +26,13 @@ public class User {
 	public Image getPicture() {
 		return picture;
 	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof User otherUser)) {
+			return false;
+		}
+
+		return this.email.equals(otherUser.email);
+	}
 }

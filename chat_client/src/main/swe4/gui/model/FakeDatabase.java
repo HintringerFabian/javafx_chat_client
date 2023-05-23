@@ -59,4 +59,12 @@ public class FakeDatabase {
 	public Chat getChat(String name) {
 		return chats.get(name);
 	}
+
+	public Map<String, Chat> getChats() {
+		return chats;
+	}
+
+	public void removeChat(Chat chat) {
+		chats.remove(chat.getName());
+	}
 }

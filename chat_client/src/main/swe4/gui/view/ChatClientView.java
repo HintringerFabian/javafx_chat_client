@@ -21,6 +21,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import main.swe4.gui.controller.EventListener;
 import main.swe4.gui.model.Chat;
 import main.swe4.gui.model.Message;
 import main.swe4.gui.model.User;
@@ -50,7 +51,11 @@ public class ChatClientView extends Application {
 	private Button lensButton = new Button();
 	private TextField searchField = new TextField();
 	private VBox chatsPane;
+	private EventListener eventListener;
 
+	public void setEventListener(EventListener listener) {
+		this.eventListener = listener;
+	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -335,14 +340,7 @@ public class ChatClientView extends Application {
 
 					// TODO This is functionality for the controller
 					// but think about how to implement it because we need the "item" variable
-					chatDeleteMenuItem.setOnAction(event -> {
-						chatToBeRemoved = item.getName();
-						if (isCurrentUserAdmin()) {
-							deleteChat(item);
-						} else {
-							showToast("You are not an admin");
-						}
-					});
+					chatDeleteMenuItem.setOnAction(event -> eventListener.handleDeleteChat(item));
 
 					// TODO This is functionality for the controller
 					// but think about how to implement it because we need the "item" variable
@@ -395,19 +393,7 @@ public class ChatClientView extends Application {
 		return user.equals(admin);
 	}
 
-	// TODO Thats functionality for the controller
-	private void deleteChat(Chat chat) {
-		// TODO Add implementation for deleting the chat
-		// Use the chat parameter to identify the chat to be deleted
-		// Handle the deletion process accordingly
-		// You can show a confirmation dialog or perform any other required actions
-		System.out.println("Deleting chat: " + chat.getName());
-		chats.remove(chat.getName());
 
-		// update the chat selection pane
-		chatPane.getItems().clear();
-		chatPane.getItems().addAll(chats.values());
-	}
 
 	private VBox createChatPane() {
 		userPane = createChatHeaderPane(null, null);

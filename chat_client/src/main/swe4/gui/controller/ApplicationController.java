@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import main.swe4.gui.model.Chat;
@@ -18,17 +17,22 @@ import main.swe4.gui.view.RegisterView;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class ApplicationController {
+public class ApplicationController implements EventListener {
 	// TODO: in next ue add chat controller and login/register controller
 	LoginView loginView;
 	RegisterView registerView;
 	ChatClientView chatClientView;
 	FakeDatabase fakeDatabase;
 
+	User currentUser;
+
 	public ApplicationController(LoginView loginView, RegisterView registerView, ChatClientView chatClientView) {
 		this.loginView = loginView;
 		this.registerView = registerView;
+
 		this.chatClientView = chatClientView;
+		chatClientView.setEventListener(this);
+
 		this.fakeDatabase = FakeDatabase.getInstance();
 	}
 
@@ -51,6 +55,44 @@ public class ApplicationController {
 		} catch (Exception e) {
 			System.err.println("Error starting login view: " + e.getMessage());
 		}
+	}
+
+	@Override
+	public void handleDeleteChat(Chat chat) {
+		if (isCurrentUserAdmin(chat)) {
+			deleteChat(chat);
+		} else {
+			chatClientView.showToast("You are not an admin");
+		}
+	}
+
+	// TODO Thats functionality for the controller
+	private void deleteChat(Chat chat) {
+		// TODO Add implementation for deleting the chat
+		// Use the chat parameter to identify the chat to be deleted
+		// Handle the deletion process accordingly
+		// You can show a confirmation dialog or perform any other required actions
+		System.out.println("Deleting chat: " + chat.getName());
+		fakeDatabase.removeChat(chat);
+
+		var chats = fakeDatabase.getChats();
+		var chatPane = chatClientView.getChatPane();
+
+		chats.remove(chat.getName());
+
+		// update the chat selection pane
+		chatPane.getItems().clear();
+		chatPane.getItems().addAll(chats.values());
+	}
+
+	private boolean isCurrentUserAdmin(Chat chat) {
+		// Use the currentUser variable to access the current user details
+		// Return true if the current user is the admin, false otherwise
+		var chats = fakeDatabase.getChats();
+
+		var chatAdmin = chat.getAdmin();
+
+		return currentUser.equals(chatAdmin);
 	}
 
 	private void chatPaneClickEvent(ObservableValue<? extends Chat> obs, Chat oldValue, Chat newValue) {
@@ -125,8 +167,9 @@ public class ApplicationController {
 					if (startApp instanceof ChatClientView chatClientView) {
 						String username = closeApp.getUsername();
 						Image profilePicture = new Image(getClass().getResourceAsStream("../images/profilePic.png"));
-						User user = new User(username, username + "@chat.com", profilePicture);
-						chatClientView.setUser(user);
+						currentUser = new User(username, username + "@chat.com", profilePicture);
+
+						chatClientView.setUser(currentUser);
 					}
 
 					startApp.start(new Stage());
