@@ -4,11 +4,10 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import main.swe4.gui.model.Chat;
 import main.swe4.gui.model.FakeDatabase;
 import main.swe4.gui.model.Message;
 import main.swe4.gui.model.User;
@@ -46,10 +45,29 @@ public class ApplicationController {
 
 			chatClientView.setMessageSearchAction(this::messageSearchAction);
 			chatClientView.setLensButtonAction(this::lensButtonAction);
+			chatClientView.setChatPaneClickEvent(this::chatPaneClickEvent);
 
 			loginView.start(new Stage());
 		} catch (Exception e) {
 			System.err.println("Error starting login view: " + e.getMessage());
+		}
+	}
+
+	private void chatPaneClickEvent(ObservableValue<? extends Chat> obs, Chat oldValue, Chat newValue) {
+		if (newValue != null && !newValue.equals(oldValue)) {
+			var chat = fakeDatabase.getChat(newValue.getName());
+			var chatName = chat.getName();
+
+			var newChatHeaderPane = chatClientView.createChatHeaderPane(chat.getImage(), chatName);
+
+			chatClientView.setUserPane(newChatHeaderPane);
+			chatClientView.updateChatHeaderPane(newChatHeaderPane);
+
+			updateMessages(chat.getMessages());
+
+			chatClientView.setCurrentChatName(chatName);
+
+			System.out.println("Selected chat: " + chatName);
 		}
 	}
 
@@ -63,7 +81,7 @@ public class ApplicationController {
 			.filter(message -> message.getMessage().contains(newValue))
 			.collect(Collectors.toCollection(ArrayList::new));
 
-		updateMessages(filteredMessages, chatClientView.getChatArea());
+		updateMessages(filteredMessages);
 	}
 
 	private void lensButtonAction(ActionEvent event) {
@@ -78,7 +96,9 @@ public class ApplicationController {
 		}
 	}
 
-	private void updateMessages(ArrayList<Message> messages, ListView<Message> chatArea) {
+	private void updateMessages(ArrayList<Message> messages) {
+		var chatArea = chatClientView.getChatArea();
+
 		chatArea.getItems().clear();
 		chatArea.getItems().addAll(messages);
 	}

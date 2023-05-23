@@ -35,7 +35,7 @@ public class ChatClientView extends Application {
 	private TextField messageField;
 	private Button sendButton;
 	private ListView<Message> chatArea;
-	private ListView<Chat> chatPane;
+	private ListView<Chat> chatPane = new ListView<>();
 	private final Map<String, Chat> chats = new HashMap<>();
 	private User user;
 	private String currentChatName;
@@ -116,7 +116,7 @@ public class ChatClientView extends Application {
 
 	private VBox createUserChatSelectionPane() {
 		HBox userPane = getHeaderPane();
-		chatPane = createChatSelectionPane();
+		createChatSelectionPane(chatPane);
 		VBox pane = new VBox(userPane, chatPane);
 
 		// TODO maybe i forgot to add a button to join a chat
@@ -160,6 +160,7 @@ public class ChatClientView extends Application {
 		createButton.setDisable(true);
 
 		// Validate the chat name field and admin selection
+		// TODO Controller
 		chatNameField.textProperty().addListener((observable, oldValue, newValue) -> {
 			boolean isChatNameValid = !newValue.trim().isEmpty();
 			createButton.setDisable(!isChatNameValid);
@@ -192,7 +193,7 @@ public class ChatClientView extends Application {
 		dialog.showAndWait();
 	}
 
-	private HBox getChatHeaderPane(Image image, String name) {
+	public HBox createChatHeaderPane(Image image, String name) {
 		// TODO code duplication, maybe with an parameter we can unite the two headerpane methods?
 
 		HBox headerPane = new HBox();
@@ -272,8 +273,7 @@ public class ChatClientView extends Application {
 		return headerPane;
 	}
 
-	private ListView<Chat> createChatSelectionPane() {
-		ListView<Chat> chatPane = new ListView<>();
+	private void createChatSelectionPane(ListView<Chat> chatPane) {
 		VBox.setVgrow(chatPane, Priority.ALWAYS);
 
 		// Create some sample chats
@@ -342,7 +342,7 @@ public class ChatClientView extends Application {
 					banUserMenuItem.setOnAction(event -> {
 						// TODO This will be added in the next ue
 						System.out.println("Ban user");
-						showToast("User xyz has been banned");
+						showToast("User xyz has been banned from: " + item.getName());
 					});
 
 					// Add menu items to the popup menu
@@ -357,32 +357,25 @@ public class ChatClientView extends Application {
 				}
 			}
 		});
+	}
 
-		// Add event handler to handle chat selection
-		chatPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+	public void setUserPane(HBox userPane) {
+		this.userPane = userPane;
+	}
+	public void setCurrentChatName(String currentChatName) {
+		this.currentChatName = currentChatName;
+	}
 
+	public void updateChatHeaderPane(HBox userPane) {
+		chatsPane.getChildren().remove(0);
+		chatsPane.getChildren().add(0, userPane);
+	}
 
-			if (newValue != null && !newValue.equals(oldValue)) {
-				userPane = getChatHeaderPane(newValue.getImage(), newValue.getName());
-
-				chatsPane.getChildren().remove(0);
-				chatsPane.getChildren().add(0, userPane);
-
-				chatArea.getItems().clear();
-
-				// TODO pull into method
-				ArrayList<Message> messages = chats.get(newValue.getName()).getMessages();
-				for (Message message : messages) {
-					chatArea.getItems().add(message);
-				}
-
-				currentChatName = newValue.getName();
-
-				System.out.println("Selected chat: " + newValue.getName());
-			}
-		});
-
+	public ListView<Chat> getChatPane() {
 		return chatPane;
+	}
+	public void setChatPaneClickEvent(ChangeListener<Chat> listener) {
+		chatPane.getSelectionModel().selectedItemProperty().addListener(listener);
 	}
 
 	private boolean isCurrentUserAdmin() {
@@ -408,7 +401,7 @@ public class ChatClientView extends Application {
 	}
 
 	private VBox createChatPane() {
-		userPane = getChatHeaderPane(null, null);
+		userPane = createChatHeaderPane(null, null);
 
 		chatArea = new ListView<>();
 		VBox.setVgrow(chatArea, Priority.ALWAYS);
