@@ -26,7 +26,7 @@ public class FakeDatabase implements Database {
 		Chat chat1 = new Chat("Drama Lama", admin, userlist);
 		Chat chat2 = new Chat("The office dudes and dudines", admin, userlist);
 		Chat chat3 = new Chat("Anime Chat", admin, userlist);
-		Chat secretChat = new Chat("Secrets", admin, userlist);
+		Chat secretChat = new Chat("Secrets", admin);
 
 		// TODO: messages have time stamps
 		// TODO: messages have a chat reference

@@ -3,6 +3,7 @@ package main.swe4.gui.model;
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class Chat {
 	private String name;
@@ -56,5 +57,13 @@ public class Chat {
 
 	public void addUser(User user) {
 		users.add(user);
+	}
+
+	public void unbanUser(User user) {
+		bannedUsers.remove(user);
+	}
+
+	public ArrayList<User> getBannedUsers() {
+		return bannedUsers;
 	}
 }

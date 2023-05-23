@@ -46,7 +46,7 @@ public class ChatClientView extends Application {
 	private HBox userPane;
 	private String chatToBeRemoved;
 
-	private MenuItem chatEditMenuItem;
+	private MenuItem chatUnbanMenuItem;
 	private MenuItem chatDeleteMenuItem;
 	private MenuItem banUserMenuItem;
 	private Button lensButton = new Button();
@@ -318,30 +318,21 @@ public class ChatClientView extends Application {
 					ContextMenu contextMenu = new ContextMenu();
 					chatDeleteMenuItem = new MenuItem("Delete");
 					banUserMenuItem = new MenuItem("Ban User");
-					// TODO change to unban user
-					chatEditMenuItem = new MenuItem("Edit");
-					// Add more menu items as needed
+					chatUnbanMenuItem = new MenuItem("Unban User");
 
-					// Set the action handlers for menu items
-					// TODO This is functionality for the controller
-					// but think about how to implement it because we need the "item" variable
-					chatEditMenuItem.setOnAction(event -> {
-						// TODO This will be added in the next ue
+					banUserMenuItem.setOnAction(event -> {
+						Dialog<ButtonType> dialog = createUserActionDialog("Ban", item);
+						dialog.showAndWait();
 					});
 
+					chatUnbanMenuItem.setOnAction(event -> {
+						Dialog<ButtonType> dialog = createUserActionDialog("Unban", item);
+						dialog.showAndWait();
+					});
 					chatDeleteMenuItem.setOnAction(event -> eventListener.handleDeleteChat(item));
 
-					// TODO This is functionality for the controller
-					// but think about how to implement it because we need the "item" variable
-					banUserMenuItem.setOnAction(event -> {
-						// TODO This will be added in the next ue
-						System.out.println("Ban user");
-						showToast("User xyz has been banned from: " + item.getName());
-						eventListener.handleBanUser(item);
-					});
-
 					// Add menu items to the popup menu
-					contextMenu.getItems().addAll(chatEditMenuItem, chatDeleteMenuItem, banUserMenuItem);
+					contextMenu.getItems().addAll(chatUnbanMenuItem, chatDeleteMenuItem, banUserMenuItem);
 					// Add more menu items to the contextMenu as needed
 
 					// Show the popup menu when the optionsButton is clicked
@@ -352,6 +343,57 @@ public class ChatClientView extends Application {
 				}
 			}
 		});
+	}
+
+	private Dialog<ButtonType> createUserActionDialog(String action, Chat chat) {
+		Dialog<ButtonType> dialog = new Dialog<>();
+		dialog.setTitle(action + " User");
+		dialog.setHeaderText(action + " a user");
+
+		// Create the dialog buttons
+		ButtonType confirmButton = new ButtonType(action, ButtonBar.ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().addAll(confirmButton, ButtonType.CANCEL);
+
+		// Enable/disable the confirm button based on input validation
+		Node confirmButtonNode = dialog.getDialogPane().lookupButton(confirmButton);
+		confirmButtonNode.setDisable(true);
+
+		// Set the dialog content
+		GridPane grid = new GridPane();
+		grid.setHgap(10);
+		grid.setVgap(10);
+		grid.setPadding(new Insets(20, 150, 10, 10));
+
+		// Add specific fields or components for banning/unbanning
+		// For example, you can add a TextField for entering the user's name or ID
+		TextField userInputField = new TextField();
+		userInputField.setPromptText("Enter user name or ID");
+		grid.addRow(0, new Label("User:"), userInputField);
+
+		dialog.getDialogPane().setContent(grid);
+
+		// Request focus on the user input field by default
+		Platform.runLater(userInputField::requestFocus);
+
+		// Enable/disable the confirm button based on input validation
+		userInputField.textProperty().addListener((observable, oldValue, newValue) -> {
+			confirmButtonNode.setDisable(newValue.trim().isEmpty());
+		});
+
+		// Set the result converter to handle button actions
+		dialog.setResultConverter(buttonType -> {
+			if (buttonType == confirmButton) {
+				// Perform the appropriate action based on the provided parameter
+				if (action.equals("Ban")) {
+					eventListener.handleBanUser(chat, userInputField.getText());
+				} else if (action.equals("Unban")) {
+					eventListener.handleUnbanUser(chat, userInputField.getText());
+				}
+			}
+			return null;
+		});
+
+		return dialog;
 	}
 
 	public void setUserPane(HBox userPane) {

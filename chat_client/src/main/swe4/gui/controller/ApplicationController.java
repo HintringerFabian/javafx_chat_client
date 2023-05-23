@@ -68,13 +68,41 @@ public class ApplicationController implements EventListener {
 	}
 
 	@Override
-	public void handleUnbanUser(Chat chat) {
+	public void handleUnbanUser(Chat chat, String username) {
+		if (isCurrentUserAdmin(chat)) {
+			var user = database.getUser(username);
 
+			if (user == null) {
+				chatClientView.showToast("User does not exist");
+			} else if (!chat.getBannedUsers().contains(user)) {
+				chatClientView.showToast("User not banned");
+			} else {
+				chat.unbanUser(user);
+				chatClientView.showToast("User unbanned");
+			}
+		} else {
+			chatClientView.showToast("You are not an admin");
+		}
 	}
 
 	@Override
-	public void handleBanUser(Chat chat) {
+	public void handleBanUser(Chat chat, String username) {
+		if (isCurrentUserAdmin(chat)) {
+			var user = database.getUser(username);
 
+			if (user == null) {
+				chatClientView.showToast("User does not exist");
+			} else if (user.equals(currentUser)) {
+				chatClientView.showToast("You cannot ban yourself");
+			} else if (chat.getBannedUsers().contains(user)) {
+				chatClientView.showToast("User already banned");
+			} else {
+				chat.banUser(user);
+				chatClientView.showToast("User banned");
+			}
+		} else {
+			chatClientView.showToast("You are not an admin");
+		}
 	}
 
 	private void sendButtonAction() {
@@ -104,11 +132,17 @@ public class ApplicationController implements EventListener {
 
 		Chat newChat;
 		if (chats.containsKey(chatName)) {
-			chatClientView.showToast("Chat already exists, you will be added to it");
 			newChat = chats.get(chatName);
-			newChat.addUser(currentUser);
+
+			if (newChat.getBannedUsers().contains(currentUser)) {
+				chatClientView.showToast("You are banned from this chat");
+			} else {
+				newChat.addUser(currentUser);
+				chatClientView.showToast("Chat already exists, you will be added to it");
+			}
 		} else {
-			newChat = new Chat(chatName, currentUser, null);
+			newChat = new Chat(chatName, currentUser);
+			newChat.addUser(currentUser);
 			chats.put(chatName, newChat);
 		}
 
