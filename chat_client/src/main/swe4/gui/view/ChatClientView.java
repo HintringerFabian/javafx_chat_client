@@ -52,6 +52,7 @@ public class ChatClientView extends Application {
 	private TextField searchField = new TextField();
 	private VBox chatsPane;
 	private EventListener eventListener;
+	private TextField createChatNameField = new TextField();
 
 	public void setEventListener(EventListener listener) {
 		this.eventListener = listener;
@@ -153,8 +154,8 @@ public class ChatClientView extends Application {
 		dialog.setHeaderText("Create a New Chat");
 
 		// Create the chat name input field
-		TextField chatNameField = new TextField();
-		chatNameField.setPromptText("Enter chat name");
+
+		createChatNameField.setPromptText("Enter chat name");
 
 		// Create the dialog buttons
 		ButtonType createButtonType = new ButtonType("Create", ButtonBar.ButtonData.OK_DONE);
@@ -166,7 +167,7 @@ public class ChatClientView extends Application {
 
 		// Validate the chat name field and admin selection
 		// TODO Controller
-		chatNameField.textProperty().addListener((observable, oldValue, newValue) -> {
+		createChatNameField.textProperty().addListener((observable, oldValue, newValue) -> {
 			boolean isChatNameValid = !newValue.trim().isEmpty();
 			// TODO think if that is view or controller
 			createButton.setDisable(!isChatNameValid);
@@ -177,18 +178,18 @@ public class ChatClientView extends Application {
 		grid.setHgap(10);
 		grid.setVgap(10);
 		grid.setPadding(new Insets(20, 150, 10, 10));
-		grid.addRow(0, new Label("Chat Name:"), chatNameField);
+		grid.addRow(0, new Label("Chat Name:"), createChatNameField);
 
 		dialog.getDialogPane().setContent(grid);
 
 		// Request focus on the chat name field by default
-		Platform.runLater(chatNameField::requestFocus);
+		Platform.runLater(createChatNameField::requestFocus);
 
 		// Convert the result to a chat object when the create button is clicked
 		// TODO Thats functionality, not view
 		dialog.setResultConverter(dialogButton -> {
 			if (dialogButton == createButtonType) {
-				String chatName = chatNameField.getText();
+				String chatName = createChatNameField.getText();
 				chatPane.getItems().addAll(new Chat(chatName, user, null));
 				chats.put(chatName, new Chat(chatName, user, null));
 			}
@@ -197,6 +198,10 @@ public class ChatClientView extends Application {
 
 		// Show the dialog and process the result
 		dialog.showAndWait();
+	}
+
+	public void setCreateChatNameValidation(
+
 	}
 
 	public HBox createChatHeaderPane(Image image, String name) {
@@ -326,9 +331,10 @@ public class ChatClientView extends Application {
 
 					// Create the popup menu
 					ContextMenu contextMenu = new ContextMenu();
-					chatEditMenuItem = new MenuItem("Edit");
 					chatDeleteMenuItem = new MenuItem("Delete");
 					banUserMenuItem = new MenuItem("Ban User");
+					// TODO change to unban user
+					chatEditMenuItem = new MenuItem("Edit");
 					// Add more menu items as needed
 
 					// Set the action handlers for menu items
@@ -338,8 +344,6 @@ public class ChatClientView extends Application {
 						// TODO This will be added in the next ue
 					});
 
-					// TODO This is functionality for the controller
-					// but think about how to implement it because we need the "item" variable
 					chatDeleteMenuItem.setOnAction(event -> eventListener.handleDeleteChat(item));
 
 					// TODO This is functionality for the controller
@@ -348,6 +352,7 @@ public class ChatClientView extends Application {
 						// TODO This will be added in the next ue
 						System.out.println("Ban user");
 						showToast("User xyz has been banned from: " + item.getName());
+						eventListener.handleBanUser(item);
 					});
 
 					// Add menu items to the popup menu

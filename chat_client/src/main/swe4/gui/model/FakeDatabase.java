@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class FakeDatabase {
+public class FakeDatabase implements Database {
 	private static FakeDatabase instance;
 	private ArrayList<User> users = new ArrayList<User>();
 	private ArrayList<Message> messages = new ArrayList<Message>();
@@ -56,14 +56,22 @@ public class FakeDatabase {
 		return instance;
 	}
 
+	@Override
 	public Chat getChat(String name) {
 		return chats.get(name);
 	}
 
+	@Override
 	public Map<String, Chat> getChats() {
 		return chats;
 	}
 
+	@Override
+	public void addChat(Chat chat) {
+
+	}
+
+	@Override
 	public void removeChat(Chat chat) {
 		chats.remove(chat.getName());
 	}

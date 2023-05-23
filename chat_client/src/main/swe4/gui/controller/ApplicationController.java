@@ -6,10 +6,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import main.swe4.gui.model.Chat;
-import main.swe4.gui.model.FakeDatabase;
-import main.swe4.gui.model.Message;
-import main.swe4.gui.model.User;
+import main.swe4.gui.model.*;
 import main.swe4.gui.view.ChatClientView;
 import main.swe4.gui.view.LoginView;
 import main.swe4.gui.view.RegisterView;
@@ -22,7 +19,7 @@ public class ApplicationController implements EventListener {
 	LoginView loginView;
 	RegisterView registerView;
 	ChatClientView chatClientView;
-	FakeDatabase fakeDatabase;
+	Database database;
 
 	User currentUser;
 
@@ -33,7 +30,7 @@ public class ApplicationController implements EventListener {
 		this.chatClientView = chatClientView;
 		chatClientView.setEventListener(this);
 
-		this.fakeDatabase = FakeDatabase.getInstance();
+		this.database = FakeDatabase.getInstance();
 	}
 
 	public void run() {
@@ -66,6 +63,16 @@ public class ApplicationController implements EventListener {
 		}
 	}
 
+	@Override
+	public void handleUnbanUser(Chat chat) {
+
+	}
+
+	@Override
+	public void handleBanUser(Chat chat) {
+
+	}
+
 	// TODO Thats functionality for the controller
 	private void deleteChat(Chat chat) {
 		// TODO Add implementation for deleting the chat
@@ -73,9 +80,9 @@ public class ApplicationController implements EventListener {
 		// Handle the deletion process accordingly
 		// You can show a confirmation dialog or perform any other required actions
 		System.out.println("Deleting chat: " + chat.getName());
-		fakeDatabase.removeChat(chat);
+		database.removeChat(chat);
 
-		var chats = fakeDatabase.getChats();
+		var chats = database.getChats();
 		var chatPane = chatClientView.getChatPane();
 
 		chats.remove(chat.getName());
@@ -88,7 +95,7 @@ public class ApplicationController implements EventListener {
 	private boolean isCurrentUserAdmin(Chat chat) {
 		// Use the currentUser variable to access the current user details
 		// Return true if the current user is the admin, false otherwise
-		var chats = fakeDatabase.getChats();
+		var chats = database.getChats();
 
 		var chatAdmin = chat.getAdmin();
 
@@ -97,7 +104,7 @@ public class ApplicationController implements EventListener {
 
 	private void chatPaneClickEvent(ObservableValue<? extends Chat> obs, Chat oldValue, Chat newValue) {
 		if (newValue != null && !newValue.equals(oldValue)) {
-			var chat = fakeDatabase.getChat(newValue.getName());
+			var chat = database.getChat(newValue.getName());
 			var chatName = chat.getName();
 
 			var newChatHeaderPane = chatClientView.createChatHeaderPane(chat.getImage(), chatName);
@@ -116,7 +123,7 @@ public class ApplicationController implements EventListener {
 	// TODO (optional): split to multiple controllers
 	private void messageSearchAction(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 		var currentChatName = chatClientView.getCurrentChatName();
-		var currentChat = fakeDatabase.getChat(currentChatName);
+		var currentChat = database.getChat(currentChatName);
 		var messages = currentChat.getMessages();
 
 		var filteredMessages = messages.stream()
