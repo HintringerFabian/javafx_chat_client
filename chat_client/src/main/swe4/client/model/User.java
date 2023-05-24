@@ -1,9 +1,9 @@
 package main.swe4.client.model;
 
 public class User {
-	private String username;
+	private final String username;
 	//private String password;
-	private String fullName;
+	private final String fullName;
 
 	public User(String username, String email) {
 		this.username = username;
@@ -15,6 +15,7 @@ public class User {
 		return username;
 	}
 
+	@SuppressWarnings("unused")
 	public String getFullName() {
 		return fullName;
 	}

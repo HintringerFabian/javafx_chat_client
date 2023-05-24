@@ -1,8 +1,8 @@
 package main.swe4.client.model;
 
 public class Message {
-	private User user;
-	private String message;
+	private final User user;
+	private final String message;
 
 	public Message(User username, String message) {
 		this.user = username;

@@ -1,5 +1,6 @@
 package main.swe4.client.controller;
 
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import main.swe4.client.model.Chat;
@@ -34,7 +35,7 @@ public class ChatViewController implements EventListener {
 	public void setUser(User user) {
 		this.currentUser = user;
 
-		view.setUser(user);
+		view.setUser(user.getUsername());
 
 		var userChats = database.getChatsFor(user);
 		view.setChats(userChats);
@@ -108,6 +109,7 @@ public class ChatViewController implements EventListener {
 			headerPaneItems.remove(searchField);
 		} else {
 			headerPaneItems.add(searchField);
+			Platform.runLater(searchField::requestFocus);
 		}
 	}
 

@@ -13,6 +13,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 public class LoginView extends Application {
 
 	Button leftButton;
@@ -56,7 +58,7 @@ public class LoginView extends Application {
 
 		// Add CSS stylesheet
 		try {
-			scene.getStylesheets().add(getClass().getResource("../css/login.css").toExternalForm());
+			scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("../css/login.css")).toExternalForm());
 		} catch (Exception e) {
 			System.out.println("Error loading stylesheet: " + e.getMessage());
 		}
@@ -128,6 +130,7 @@ public class LoginView extends Application {
 		return usernameField.getText();
 	}
 
+	@SuppressWarnings("unused")
 	public String getPassword() {
 		return passwordField.getText();
 	}

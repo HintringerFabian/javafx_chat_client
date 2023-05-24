@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class FakeDatabase implements Database {
 	private static FakeDatabase instance;
-	private ArrayList<User> users = new ArrayList<>();
+	private final ArrayList<User> users = new ArrayList<>();
 	private final Map<String, Chat> chats = new HashMap<>();
 
 	private FakeDatabase() {

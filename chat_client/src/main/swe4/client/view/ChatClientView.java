@@ -24,36 +24,31 @@ import javafx.util.Duration;
 import main.swe4.client.controller.EventListener;
 import main.swe4.client.model.Chat;
 import main.swe4.client.model.Message;
-import main.swe4.client.model.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class ChatClientView extends Application {
 	private Stage primaryStage;
 	private TextField messageField;
-	Image profilePicture = new Image(getClass().getResourceAsStream("../images/profilePic.png"));
-	private Button sendButton = new Button("Send");
+	private final Button sendButton = new Button("Send");
 	private ListView<Message> chatArea;
-	private ListView<Chat> chatPane = new ListView<>();
+	private final ListView<Chat> chatPane = new ListView<>();
 	private ArrayList<Chat> chats;
-	private User user;
+	private String username;
 	private String currentChatName;
-	private ImageView chatPicture;
-	private Text chatNameText;
 	private HBox userPane;
-	private String chatToBeRemoved;
-
 	private MenuItem chatUnbanMenuItem;
 	private MenuItem chatDeleteMenuItem;
 	private MenuItem banUserMenuItem;
-	private Button lensButton = new Button();
-	private TextField searchField = new TextField();
+	private final Button lensButton = new Button();
+	private final TextField searchField = new TextField();
 	private VBox chatsPane;
 	private EventListener eventListener;
 
 	// chat creation variables
-	private TextField createChatNameField = new TextField();
-	private Dialog<ButtonType> createChatDialog = createChatCreationDialog();
+	private final TextField createChatNameField = new TextField();
+	private final Dialog<ButtonType> createChatDialog = createChatCreationDialog();
 	private Node chatCreateButtonNode;
 	private ButtonType chatCreateButton;
 
@@ -134,9 +129,7 @@ public class ChatClientView extends Application {
 		addButton.getStyleClass().add("add-button");
 
 		// Set the action handler for the button
-		addButton.setOnAction(event -> {
-			createChatDialog.showAndWait();
-		});
+		addButton.setOnAction(event -> createChatDialog.showAndWait());
 
 		// Create a separate HBox for the button
 		HBox buttonPane = new HBox(addButton);
@@ -183,26 +176,6 @@ public class ChatClientView extends Application {
 		return dialog;
 	}
 
-	public void setCreateChatButtonAction(Runnable action) {
-		createChatDialog.setResultConverter(dialogButton -> {
-			if (dialogButton == chatCreateButton) {
-				action.run();
-			}
-			return null;
-		});
-	}
-	public TextField getCreateChatNameField() {
-		return createChatNameField;
-	}
-
-	public Node getChatCreateButtonNode() {
-		return chatCreateButtonNode;
-	}
-
-	public void setCreateChatNameValidation(ChangeListener<String> listener) {
-		createChatNameField.textProperty().addListener(listener);
-	}
-
 	public HBox createChatHeaderPane(String name) {
 		HBox headerPane = new HBox();
 		headerPane.setPadding(new Insets(10));
@@ -212,7 +185,7 @@ public class ChatClientView extends Application {
 		if (name == null) {
 			name = "";
 		}
-		chatNameText = new Text(name);
+		Text chatNameText = new Text(name);
 		chatNameText.setId("header-text");
 
 		// Add the lens button
@@ -231,37 +204,13 @@ public class ChatClientView extends Application {
 		return headerPane;
 	}
 
-	public void setMessageSearchAction(ChangeListener<String> listener) {
-		searchField.textProperty().addListener(listener);
-	}
-
-	public void setLensButtonAction(EventHandler<ActionEvent> handler) {
-		lensButton.setOnAction(handler);
-	}
-
-	public String getCurrentChatName() {
-		return currentChatName;
-	}
-
-	public ListView<Message> getChatArea() {
-		return chatArea;
-	}
-
-	public TextField getSearchField() {
-		return searchField;
-	}
-
-	public HBox getUserPane() {
-		return userPane;
-	}
-
 	private HBox getHeaderPane() {
 		HBox headerPane = new HBox();
 		headerPane.setPadding(new Insets(10));
 		headerPane.setId("header-pane");
 
 		// Add the user's name
-		Text userName = new Text(user.getUsername());
+		Text userName = new Text(username);
 
 		userName.setId("header-pane");
 		headerPane.getChildren().add(userName);
@@ -360,9 +309,9 @@ public class ChatClientView extends Application {
 		Platform.runLater(userInputField::requestFocus);
 
 		// Enable/disable the confirm button based on input validation
-		userInputField.textProperty().addListener((observable, oldValue, newValue) -> {
-			confirmButtonNode.setDisable(newValue.trim().isEmpty());
-		});
+		userInputField.textProperty().addListener(
+				(observable, oldValue, newValue) -> confirmButtonNode.setDisable(newValue.trim().isEmpty())
+		);
 
 		// Set the result converter to handle button actions
 		dialog.setResultConverter(buttonType -> {
@@ -378,25 +327,6 @@ public class ChatClientView extends Application {
 		});
 
 		return dialog;
-	}
-
-	public void setUserPane(HBox userPane) {
-		this.userPane = userPane;
-	}
-	public void setCurrentChatName(String currentChatName) {
-		this.currentChatName = currentChatName;
-	}
-
-	public void updateChatHeaderPane(HBox userPane) {
-		chatsPane.getChildren().remove(0);
-		chatsPane.getChildren().add(0, userPane);
-	}
-
-	public ListView<Chat> getChatPane() {
-		return chatPane;
-	}
-	public void setChatPaneClickEvent(ChangeListener<Chat> listener) {
-		chatPane.getSelectionModel().selectedItemProperty().addListener(listener);
 	}
 
 	private VBox createChatPane() {
@@ -446,14 +376,6 @@ public class ChatClientView extends Application {
 		return messageSendPane;
 	}
 
-	public void setSendButtonAction(Runnable action) {
-		sendButton.setOnAction(event -> action.run());
-	}
-
-	public TextField getMessageField() {
-		return messageField;
-	}
-
 	public void showToast(String message) {
 		// Create a label for the toast message
 		Label toastLabel = new Label(message);
@@ -488,6 +410,77 @@ public class ChatClientView extends Application {
 		pause.play();
 	}
 
+	public void setCreateChatButtonAction(Runnable action) {
+		createChatDialog.setResultConverter(dialogButton -> {
+			if (dialogButton == chatCreateButton) {
+				action.run();
+			}
+			return null;
+		});
+	}
+	public TextField getCreateChatNameField() {
+		return createChatNameField;
+	}
+
+	public Node getChatCreateButtonNode() {
+		return chatCreateButtonNode;
+	}
+
+	public void setCreateChatNameValidation(ChangeListener<String> listener) {
+		createChatNameField.textProperty().addListener(listener);
+	}
+
+	public void setMessageSearchAction(ChangeListener<String> listener) {
+		searchField.textProperty().addListener(listener);
+	}
+
+	public void setLensButtonAction(EventHandler<ActionEvent> handler) {
+		lensButton.setOnAction(handler);
+	}
+
+	public String getCurrentChatName() {
+		return currentChatName;
+	}
+
+	public ListView<Message> getChatArea() {
+		return chatArea;
+	}
+
+	public TextField getSearchField() {
+		return searchField;
+	}
+
+	public HBox getUserPane() {
+		return userPane;
+	}
+
+	public void setUserPane(HBox userPane) {
+		this.userPane = userPane;
+	}
+	public void setCurrentChatName(String currentChatName) {
+		this.currentChatName = currentChatName;
+	}
+
+	public void updateChatHeaderPane(HBox userPane) {
+		chatsPane.getChildren().remove(0);
+		chatsPane.getChildren().add(0, userPane);
+	}
+
+	public ListView<Chat> getChatPane() {
+		return chatPane;
+	}
+	public void setChatPaneClickEvent(ChangeListener<Chat> listener) {
+		chatPane.getSelectionModel().selectedItemProperty().addListener(listener);
+	}
+
+	public void setSendButtonAction(Runnable action) {
+		sendButton.setOnAction(event -> action.run());
+	}
+
+	public TextField getMessageField() {
+		return messageField;
+	}
+
 	private void loadCss(Scene scene) {
 		try {
 			scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("../css/client.css")).toExternalForm());
@@ -508,8 +501,8 @@ public class ChatClientView extends Application {
 		return uri;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUser(String username) {
+		this.username = username;
 	}
 
 	public void setChats(ArrayList<Chat> chats) {
