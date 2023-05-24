@@ -29,7 +29,6 @@ public class FakeDatabase implements Database {
 		Chat secretChat = new Chat("Secrets", admin);
 
 		// TODO: messages have time stamps
-		// TODO: messages have a chat reference
 		Message message1 = new Message(user1, "Hello");
 		Message message2 = new Message(user2, "Hi there");
 		Message message3 = new Message(user1, "How are you?");

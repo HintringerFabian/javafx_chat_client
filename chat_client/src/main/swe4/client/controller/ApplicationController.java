@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class ApplicationController implements EventListener {
-	// TODO: in next ue add chat controller and login/register controller
+	// TODO (optional): split to multiple controllers
+
 	LoginView loginView;
 	RegisterView registerView;
 	ChatClientView chatClientView;
@@ -151,13 +152,7 @@ public class ApplicationController implements EventListener {
 		createChatNameField.clear();
 		createChatButton.setDisable(true);
 	}
-
-	// TODO Thats functionality for the controller
 	private void deleteChat(Chat chat) {
-		// TODO Add implementation for deleting the chat
-		// Use the chat parameter to identify the chat to be deleted
-		// Handle the deletion process accordingly
-		// You can show a confirmation dialog or perform any other required actions
 		System.out.println("Deleting chat: " + chat.getName());
 		database.removeChat(chat);
 
@@ -207,7 +202,6 @@ public class ApplicationController implements EventListener {
 		}
 	}
 
-	// TODO (optional): split to multiple controllers
 	private void messageSearchAction(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 		var currentChatName = chatClientView.getCurrentChatName();
 		var currentChat = database.getChat(currentChatName);

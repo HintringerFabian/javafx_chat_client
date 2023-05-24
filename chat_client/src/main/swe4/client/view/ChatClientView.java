@@ -29,9 +29,6 @@ import main.swe4.gui.model.User;
 import java.util.*;
 
 public class ChatClientView extends Application {
-	// TODO: in next ue, refactor this class to use a controller, and create a functioning MVC
-	// as at the moment static data is used to simulate a database (in the view...)
-
 	private Stage primaryStage;
 	private TextField messageField;
 	Image profilePicture = new Image(getClass().getResourceAsStream("../images/profilePic.png"));
@@ -132,7 +129,6 @@ public class ChatClientView extends Application {
 		createChatSelectionPane(chatPane);
 		VBox pane = new VBox(userPane, chatPane);
 
-		// TODO maybe i forgot to add a button to join a chat
 		// Create the button
 		Button addButton = new Button("+");
 		addButton.getStyleClass().add("add-button");
@@ -208,8 +204,6 @@ public class ChatClientView extends Application {
 	}
 
 	public HBox createChatHeaderPane(Image image, String name) {
-		// TODO code duplication, maybe with an parameter we can unite the two headerpane methods?
-
 		HBox headerPane = new HBox();
 		headerPane.setPadding(new Insets(10));
 		headerPane.setId("header-pane");
