@@ -1,4 +1,4 @@
-package main.swe4.gui.view;
+package main.swe4.client.view;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
@@ -21,10 +21,10 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import main.swe4.gui.controller.EventListener;
-import main.swe4.gui.model.Chat;
-import main.swe4.gui.model.Message;
-import main.swe4.gui.model.User;
+import main.swe4.client.controller.EventListener;
+import main.swe4.client.model.Chat;
+import main.swe4.client.model.Message;
+import main.swe4.client.model.User;
 
 import java.util.*;
 

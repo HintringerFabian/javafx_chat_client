@@ -1,9 +1,8 @@
-package main.swe4.gui.model;
+package main.swe4.client.model;
 
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class Chat {
 	private String name;

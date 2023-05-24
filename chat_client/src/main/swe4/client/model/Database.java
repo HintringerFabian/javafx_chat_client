@@ -1,4 +1,4 @@
-package main.swe4.gui.model;
+package main.swe4.client.model;
 
 import java.util.ArrayList;
 import java.util.Map;

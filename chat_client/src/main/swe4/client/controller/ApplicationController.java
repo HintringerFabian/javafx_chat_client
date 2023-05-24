@@ -1,14 +1,14 @@
-package main.swe4.gui.controller;
+package main.swe4.client.controller;
 
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
-import main.swe4.gui.model.*;
-import main.swe4.gui.view.ChatClientView;
-import main.swe4.gui.view.LoginView;
-import main.swe4.gui.view.RegisterView;
+import main.swe4.client.model.*;
+import main.swe4.client.view.ChatClientView;
+import main.swe4.client.view.LoginView;
+import main.swe4.client.view.RegisterView;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;

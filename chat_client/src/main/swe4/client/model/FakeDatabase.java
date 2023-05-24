@@ -1,12 +1,8 @@
-package main.swe4.gui.model;
-
-import javafx.scene.image.Image;
+package main.swe4.client.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class FakeDatabase implements Database {
 	private static FakeDatabase instance;

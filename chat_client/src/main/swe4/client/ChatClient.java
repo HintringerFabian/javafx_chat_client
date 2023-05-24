@@ -1,11 +1,11 @@
-package main.swe4.gui;
+package main.swe4.client;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import main.swe4.gui.controller.ApplicationController;
-import main.swe4.gui.view.ChatClientView;
-import main.swe4.gui.view.LoginView;
-import main.swe4.gui.view.RegisterView;
+import main.swe4.client.controller.ApplicationController;
+import main.swe4.client.view.ChatClientView;
+import main.swe4.client.view.LoginView;
+import main.swe4.client.view.RegisterView;
 
 public class ChatClient extends Application {
 

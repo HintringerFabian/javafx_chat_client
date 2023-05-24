@@ -1,4 +1,4 @@
-package main.swe4.gui.view;
+package main.swe4.client.view;
 
 import javafx.collections.ObservableList;
 import javafx.scene.Node;

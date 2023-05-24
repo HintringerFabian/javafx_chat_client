@@ -1,6 +1,4 @@
-package main.swe4.gui.model;
-
-import javafx.scene.image.Image;
+package main.swe4.client.model;
 
 public class User {
 	private String username;
