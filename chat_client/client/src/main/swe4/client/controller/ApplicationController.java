@@ -6,6 +6,12 @@ import main.swe4.client.view.ChatClientView;
 import main.swe4.client.view.LoginView;
 import main.swe4.client.view.RegisterView;
 import main.swe4.common.Database;
+import main.swe4.common.User;
+
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
 public class ApplicationController {
 	LoginView loginView;
@@ -14,15 +20,21 @@ public class ApplicationController {
 	Database database;
 	ChatViewController chatViewController;
 	LoginRegisterController loginRegisterController;
+	String serverUrlAndPort;
 
-	public ApplicationController(LoginView loginView, RegisterView registerView, ChatClientView chatClientView) {
+	public ApplicationController(
+			LoginView loginView,
+			RegisterView registerView,
+			ChatClientView chatClientView,
+			String serverUrlAndPort
+	) throws RemoteException, MalformedURLException, NotBoundException {
+		this.serverUrlAndPort = serverUrlAndPort;
+		this.database = (Database) Naming.lookup(serverUrlAndPort);
+
 		this.loginView = loginView;
 		this.registerView = registerView;
 
 		this.chatClientView = chatClientView;
-
-
-		this.database = Database.getInstance();
 
 		chatViewController = new ChatViewController(database, chatClientView);
 		loginRegisterController = new LoginRegisterController(loginView, registerView, database, this);

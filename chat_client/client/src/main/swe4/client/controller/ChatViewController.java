@@ -3,12 +3,13 @@ package main.swe4.client.controller;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import main.swe4.client.model.Chat;
-import main.swe4.client.model.Database;
-import main.swe4.client.model.User;
 import main.swe4.client.view.ChatClientView;
-import main.swe4.client.model.Message;
+import main.swe4.common.Chat;
+import main.swe4.common.Database;
+import main.swe4.common.Message;
+import main.swe4.common.User;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,10 @@ public class ChatViewController implements EventListener {
 	private final Database database;
 	private final ChatClientView view;
 	private User currentUser;
+
+	// TODO: add list for chats and messages, the server will provide the data, it will be stored
+	// in the database and the client will get it from there, the client will only have to update
+	// the view by adding the new data to the list and then calling the view's update method
 
 	ChatViewController(Database database, ChatClientView view) {
 		this.database = database;
@@ -37,8 +42,12 @@ public class ChatViewController implements EventListener {
 
 		view.setUser(user.getUsername());
 
-		var userChats = database.getChatsFor(user);
-		view.setChats(userChats);
+		try {
+			var userChats = database.getChatsFor(user);
+			view.setChats(userChats);
+		} catch (RemoteException remoteException) {
+			handleDatabaseException(remoteException);
+		}
 	}
 
 	@Override
@@ -53,17 +62,24 @@ public class ChatViewController implements EventListener {
 	@Override
 	public void handleBanUser(Chat chat, String username) {
 		if (isCurrentUserAdmin(chat)) {
-			var user = database.getUser(username);
 
-			if (user == null) {
-				view.showToast("User does not exist");
-			} else if (user.equals(currentUser)) {
-				view.showToast("You cannot ban yourself");
-			} else if (chat.getBannedUsers().contains(user)) {
-				view.showToast("User already banned");
-			} else {
-				chat.banUser(user);
-				view.showToast("User banned");
+			try {
+				var user = database.getUser(username);
+
+				if (user == null) {
+					view.showToast("User does not exist");
+				} else if (user.equals(currentUser)) {
+					view.showToast("You cannot ban yourself");
+				} else if (chat.getBannedUsers().contains(user)) {
+					view.showToast("User already banned");
+				} else {
+					chat.banUser(user);
+					view.showToast("User banned");
+				}
+			} catch (RemoteException remoteException) {
+				remoteException.printStackTrace();
+				throw new RuntimeException(remoteException);
+
 			}
 		} else {
 			view.showToast("You are not an admin");
@@ -73,31 +89,41 @@ public class ChatViewController implements EventListener {
 	@Override
 	public void handleUnbanUser(Chat chat, String username) {
 		if (isCurrentUserAdmin(chat)) {
-			var user = database.getUser(username);
+			try {
+				var user = database.getUser(username);
 
-			if (user == null) {
-				view.showToast("User does not exist");
-			} else if (!chat.getBannedUsers().contains(user)) {
-				view.showToast("User not banned");
-			} else {
-				chat.unbanUser(user);
-				view.showToast("User unbanned");
+				if (user == null) {
+					view.showToast("User does not exist");
+				} else if (!chat.getBannedUsers().contains(user)) {
+					view.showToast("User not banned");
+				} else {
+					chat.unbanUser(user);
+					view.showToast("User unbanned");
+				}
+			} catch (RemoteException remoteException) {
+				remoteException.printStackTrace();
+				throw new RuntimeException(remoteException);
 			}
+
 		} else {
 			view.showToast("You are not an admin");
 		}
 	}
 
 	private void messageSearchAction(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-		var currentChatName = view.getCurrentChatName();
-		var currentChat = database.getChat(currentChatName);
-		var messages = currentChat.getMessages();
+		try {
+			var currentChatName = view.getCurrentChatName();
+			var currentChat = database.getChat(currentChatName);
+			var messages = currentChat.getMessages();
 
-		var filteredMessages = messages.stream()
-				.filter(message -> message.getMessage().contains(newValue))
-				.collect(Collectors.toCollection(ArrayList::new));
+			var filteredMessages = messages.stream()
+					.filter(message -> message.getMessage().contains(newValue))
+					.collect(Collectors.toCollection(ArrayList::new));
 
-		updateMessages(filteredMessages);
+			updateMessages(filteredMessages);
+		} catch (RemoteException remoteException) {
+			handleDatabaseException(remoteException);
+		}
 	}
 
 	private void lensButtonAction(ActionEvent event) {
@@ -115,19 +141,23 @@ public class ChatViewController implements EventListener {
 
 	private void chatPaneClickEvent(ObservableValue<? extends Chat> obs, Chat oldValue, Chat newValue) {
 		if (newValue != null && !newValue.equals(oldValue)) {
-			var chat = database.getChat(newValue.getName());
-			var chatName = chat.getName();
+			try {
+				var chat = database.getChat(newValue.getName());
+				var chatName = chat.getName();
 
-			var newChatHeaderPane = view.createChatHeaderPane(chatName);
+				var newChatHeaderPane = view.createChatHeaderPane(chatName);
 
-			view.setUserPane(newChatHeaderPane);
-			view.updateChatHeaderPane(newChatHeaderPane);
+				view.setUserPane(newChatHeaderPane);
+				view.updateChatHeaderPane(newChatHeaderPane);
 
-			updateMessages(chat.getMessages());
+				updateMessages(chat.getMessages());
 
-			view.setCurrentChatName(chatName);
+				view.setCurrentChatName(chatName);
 
-			System.out.println("Selected chat: " + chatName);
+				System.out.println("Selected chat: " + chatName);
+			} catch (RemoteException remoteException) {
+				handleDatabaseException(remoteException);
+			}
 		}
 	}
 
@@ -140,50 +170,58 @@ public class ChatViewController implements EventListener {
 	}
 
 	private void createChatButtonAction() {
-		var createChatNameField = view.getCreateChatNameField();
-		var createChatButton = view.getChatCreateButtonNode();
-		var chatPane = view.getChatPane();
-		var chats = database.getChats();
-		var chatName = createChatNameField.getText();
+		try {
+			var createChatNameField = view.getCreateChatNameField();
+			var createChatButton = view.getChatCreateButtonNode();
+			var chatPane = view.getChatPane();
+			var chats = database.getChats();
+			var chatName = createChatNameField.getText();
 
-		Chat newChat;
-		if (chats.containsKey(chatName)) {
-			newChat = chats.get(chatName);
+			Chat newChat;
+			if (chats.containsKey(chatName)) {
+				newChat = chats.get(chatName);
 
-			if (newChat.getBannedUsers().contains(currentUser)) {
-				view.showToast("You are banned from this chat");
+				if (newChat.getBannedUsers().contains(currentUser)) {
+					view.showToast("You are banned from this chat");
+				} else {
+					newChat.addUser(currentUser);
+					view.showToast("Chat already exists, you will be added to it");
+				}
 			} else {
+				newChat = new Chat(chatName, currentUser);
 				newChat.addUser(currentUser);
-				view.showToast("Chat already exists, you will be added to it");
+
+				database.addChat(newChat);
 			}
-		} else {
-			newChat = new Chat(chatName, currentUser);
-			newChat.addUser(currentUser);
 
-			database.addChat(newChat);
+			chatPane.getItems().add(newChat);
+
+			createChatNameField.clear();
+			createChatButton.setDisable(true);
+		} catch (RemoteException remoteException) {
+			handleDatabaseException(remoteException);
 		}
-
-		chatPane.getItems().add(newChat);
-
-		createChatNameField.clear();
-		createChatButton.setDisable(true);
 	}
 
 	private void sendButtonAction() {
-		var messageField = view.getMessageField();
-		var message = messageField.getText();
-		var chat = database.getChat(view.getCurrentChatName());
+		try {
+			var messageField = view.getMessageField();
+			var message = messageField.getText();
+			var chat = database.getChat(view.getCurrentChatName());
 
-		if (message.isEmpty()) {
-			view.showToast("Message cannot be empty");
-		} else if (chat == null) {
-			view.showToast("No chat selected");
-		} else {
-			var newMessage = new Message(currentUser, message);
-			chat.addMessage(newMessage);
+			if (message.isEmpty()) {
+				view.showToast("Message cannot be empty");
+			} else if (chat == null) {
+				view.showToast("No chat selected");
+			} else {
+				var newMessage = new Message(currentUser, message);
+				chat.addMessage(newMessage);
 
-			messageField.clear();
-			updateMessages(chat.getMessages());
+				messageField.clear();
+				updateMessages(chat.getMessages());
+			}
+		} catch (RemoteException remoteException) {
+			handleDatabaseException(remoteException);
 		}
 	}
 
@@ -194,15 +232,20 @@ public class ChatViewController implements EventListener {
 	}
 
 	private void deleteChat(Chat chat) {
-		System.out.println("Deleting chat: " + chat.getName());
-		database.removeChat(chat);
+		try {
+			database.removeChat(chat);
 
-		var chats = database.getChats();
-		var chatPane = view.getChatPane();
+			var chats = database.getChats();
+			var chatPane = view.getChatPane();
 
-		// update the chat selection pane
-		chatPane.getItems().clear();
-		chatPane.getItems().addAll(chats.values());
+			// update the chat selection pane
+			chatPane.getItems().clear();
+			chatPane.getItems().addAll(chats.values());
+
+			System.out.println("Deleting chat: " + chat.getName());
+		} catch (RemoteException remoteException) {
+			handleDatabaseException(remoteException);
+		}
 	}
 
 	private void updateMessages(ArrayList<Message> messages) {
@@ -210,5 +253,12 @@ public class ChatViewController implements EventListener {
 
 		chatArea.getItems().clear();
 		chatArea.getItems().addAll(messages);
+	}
+
+	private void handleDatabaseException(RemoteException remoteException) {
+		remoteException.printStackTrace();
+		Platform.runLater(() -> {
+			view.showToast("Database error, please try to restart application");
+		});
 	}
 }

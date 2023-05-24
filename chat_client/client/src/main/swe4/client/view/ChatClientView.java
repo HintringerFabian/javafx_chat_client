@@ -22,6 +22,8 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import main.swe4.client.controller.EventListener;
+import main.swe4.common.Chat;
+import main.swe4.common.Message;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -505,5 +507,9 @@ public class ChatClientView extends Application {
 
 	public void setChats(ArrayList<Chat> chats) {
 		this.chats = chats;
+	}
+
+	public void shutdown() {
+		primaryStage.close();
 	}
 }

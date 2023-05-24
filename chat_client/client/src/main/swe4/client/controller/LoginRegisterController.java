@@ -1,8 +1,8 @@
 package main.swe4.client.controller;
 
-import main.swe4.client.model.Database;
 import main.swe4.client.view.LoginView;
 import main.swe4.client.view.RegisterView;
+import main.swe4.common.Database;
 
 public class LoginRegisterController {
 	// needed for login and registration views when functionality is implemented

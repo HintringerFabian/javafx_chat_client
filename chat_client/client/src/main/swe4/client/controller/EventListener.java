@@ -1,6 +1,8 @@
 package main.swe4.client.controller;
 
-import main.swe4.client.model.Chat;
+import main.swe4.common.Chat;
+
+import java.rmi.RemoteException;
 
 public interface EventListener {
 	void handleDeleteChat(Chat chat);

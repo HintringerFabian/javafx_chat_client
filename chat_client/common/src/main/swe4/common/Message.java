@@ -1,6 +1,10 @@
 package main.swe4.common;
 
-public class Message {
+import java.io.Serializable;
+
+public class Message implements Serializable {
+	// TODO maybe next time dont forget to implement timestamps
+	// TODO also add them to the view
 	private final User user;
 	private final String message;
 

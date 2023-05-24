@@ -1,10 +1,11 @@
-package main.swe4.server;
+package main.swe4.database;
 
 import main.swe4.common.Chat;
 import main.swe4.common.Database;
 import main.swe4.common.Message;
 import main.swe4.common.User;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,17 +63,17 @@ public class FakeDatabase implements Database {
 	}
 
 	@Override
-	public Chat getChat(String name) {
+	public Chat getChat(String name) throws RemoteException {
 		return chats.get(name);
 	}
 
 	@Override
-	public Map<String, Chat> getChats() {
+	public Map<String, Chat> getChats() throws RemoteException {
 		return chats;
 	}
 
 	@Override
-	public ArrayList<Chat> getChatsFor(User user) {
+	public ArrayList<Chat> getChatsFor(User user) throws RemoteException {
 		var chatsWithUser = chats.values()
 				.stream()
 				.filter(chat -> chat.getUsers().contains(user))
@@ -82,17 +83,17 @@ public class FakeDatabase implements Database {
 	}
 
 	@Override
-	public void addChat(Chat chat) {
+	public void addChat(Chat chat) throws RemoteException {
 		chats.put(chat.getName(), chat);
 	}
 
 	@Override
-	public void removeChat(Chat chat) {
+	public void removeChat(Chat chat) throws RemoteException {
 		chats.remove(chat.getName());
 	}
 
 	@Override
-	public User getUser(String username) {
+	public User getUser(String username) throws RemoteException {
 		return users.stream()
 				.filter(user -> user.getUsername().equals(username))
 				.findFirst()

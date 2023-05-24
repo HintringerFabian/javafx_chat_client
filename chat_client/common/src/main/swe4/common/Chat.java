@@ -1,8 +1,9 @@
 package main.swe4.common;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Chat {
+public class Chat implements Serializable {
 	private final String name;
 	private final User admin;
 	private final ArrayList<Message> messages;
