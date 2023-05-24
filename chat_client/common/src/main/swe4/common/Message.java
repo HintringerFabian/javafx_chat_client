@@ -1,4 +1,4 @@
-package main.swe4.client.model;
+package main.swe4.common;
 
 public class Message {
 	private final User user;

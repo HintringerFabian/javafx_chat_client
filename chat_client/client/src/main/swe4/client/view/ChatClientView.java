@@ -22,8 +22,6 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import main.swe4.client.controller.EventListener;
-import main.swe4.client.model.Chat;
-import main.swe4.client.model.Message;
 
 import java.util.ArrayList;
 import java.util.Objects;

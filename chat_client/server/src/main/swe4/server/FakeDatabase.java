@@ -1,4 +1,9 @@
-package main.swe4.client.model;
+package main.swe4.server;
+
+import main.swe4.common.Chat;
+import main.swe4.common.Database;
+import main.swe4.common.Message;
+import main.swe4.common.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;

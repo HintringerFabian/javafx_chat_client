@@ -2,12 +2,10 @@ package main.swe4.client.controller;
 
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import main.swe4.client.model.Database;
-import main.swe4.client.model.FakeDatabase;
-import main.swe4.client.model.User;
 import main.swe4.client.view.ChatClientView;
 import main.swe4.client.view.LoginView;
 import main.swe4.client.view.RegisterView;
+import main.swe4.common.Database;
 
 public class ApplicationController {
 	LoginView loginView;
@@ -24,7 +22,7 @@ public class ApplicationController {
 		this.chatClientView = chatClientView;
 
 
-		this.database = FakeDatabase.getInstance();
+		this.database = Database.getInstance();
 
 		chatViewController = new ChatViewController(database, chatClientView);
 		loginRegisterController = new LoginRegisterController(loginView, registerView, database, this);

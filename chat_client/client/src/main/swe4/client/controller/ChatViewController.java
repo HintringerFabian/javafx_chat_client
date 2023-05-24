@@ -5,9 +5,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import main.swe4.client.model.Chat;
 import main.swe4.client.model.Database;
-import main.swe4.client.model.Message;
 import main.swe4.client.model.User;
 import main.swe4.client.view.ChatClientView;
+import main.swe4.client.model.Message;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;

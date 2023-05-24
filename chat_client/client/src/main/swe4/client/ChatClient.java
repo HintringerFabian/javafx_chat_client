@@ -2,15 +2,15 @@ package main.swe4.client;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import main.swe4.client.controller.ApplicationController;
-import main.swe4.client.view.ChatClientView;
 import main.swe4.client.view.LoginView;
 import main.swe4.client.view.RegisterView;
+import main.swe4.client.controller.ApplicationController;
+import main.swe4.client.view.ChatClientView;
 
 public class ChatClient extends Application {
 
 	public static void main(String[] args) {
-		launch(args);
+		Application.launch(args);
 	}
 
 	@Override
