@@ -203,16 +203,10 @@ public class ChatClientView extends Application {
 		createChatNameField.textProperty().addListener(listener);
 	}
 
-	public HBox createChatHeaderPane(Image image, String name) {
+	public HBox createChatHeaderPane(String name) {
 		HBox headerPane = new HBox();
 		headerPane.setPadding(new Insets(10));
 		headerPane.setId("header-pane");
-
-		// Add the user's profile picture
-		chatPicture = new ImageView(image);
-		chatPicture.setId("profile-pic");
-		chatPicture.setFitHeight(50);
-		chatPicture.setFitWidth(50);
 
 		// Add the user's name
 		if (name == null) {
@@ -232,7 +226,7 @@ public class ChatClientView extends Application {
 
 		lensButton.setGraphic(lensImageView);
 		lensButton.setVisible(!name.equals(""));
-		headerPane.getChildren().addAll(chatPicture, chatNameText, lensButton);
+		headerPane.getChildren().addAll(chatNameText, lensButton);
 
 		return headerPane;
 	}
@@ -295,10 +289,6 @@ public class ChatClientView extends Application {
 					chatItem.setSpacing(10);
 					chatItem.setAlignment(Pos.CENTER_LEFT);
 
-					ImageView imageView = new ImageView(item.getImage());
-					imageView.setFitWidth(25);
-					imageView.setFitHeight(25);
-
 					Text nameText = new Text(item.getName());
 					nameText.setStyle("-fx-font-weight: bold;");
 					HBox.setHgrow(nameText, Priority.ALWAYS);
@@ -332,7 +322,7 @@ public class ChatClientView extends Application {
 					// Show the popup menu when the optionsButton is clicked
 					optionsButton.setOnAction(event -> contextMenu.show(optionsButton, Side.BOTTOM, 0, 0));
 
-					chatItem.getChildren().addAll(imageView, nameText, new Region(), optionsButton);
+					chatItem.getChildren().addAll(nameText, new Region(), optionsButton);
 					setGraphic(chatItem);
 				}
 			}
@@ -410,7 +400,7 @@ public class ChatClientView extends Application {
 	}
 
 	private VBox createChatPane() {
-		userPane = createChatHeaderPane(null, null);
+		userPane = createChatHeaderPane(null);
 
 		chatArea = new ListView<>();
 		VBox.setVgrow(chatArea, Priority.ALWAYS);

@@ -1,16 +1,13 @@
 package main.swe4.client.model;
 
-import javafx.scene.image.Image;
-
 import java.util.ArrayList;
 
 public class Chat {
-	private String name;
-	private User admin;
-	private Image image;
-	private ArrayList<Message> messages;
-	private ArrayList<User> users;
-	private ArrayList<User> bannedUsers;
+	private final String name;
+	private final User admin;
+	private final ArrayList<Message> messages;
+	private final ArrayList<User> users;
+	private final ArrayList<User> bannedUsers;
 
 	public Chat(String name, User admin, ArrayList<User> users) {
 		this.name = name;
@@ -31,10 +28,6 @@ public class Chat {
 
 	public User getAdmin() {
 		return admin;
-	}
-
-	public Image getImage() {
-		return image;
 	}
 
 	public ArrayList<Message> getMessages() {

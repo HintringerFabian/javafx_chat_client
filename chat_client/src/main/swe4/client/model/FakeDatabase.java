@@ -78,7 +78,7 @@ public class FakeDatabase implements Database {
 
 	@Override
 	public void addChat(Chat chat) {
-
+		chats.put(chat.getName(), chat);
 	}
 
 	@Override
