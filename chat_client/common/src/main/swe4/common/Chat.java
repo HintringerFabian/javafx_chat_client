@@ -15,6 +15,8 @@ public class Chat implements Serializable {
 		this.admin = admin;
 		this.users = users;
 
+		users.add(admin);
+
 		messages = new ArrayList<>();
 		bannedUsers = new ArrayList<>();
 	}

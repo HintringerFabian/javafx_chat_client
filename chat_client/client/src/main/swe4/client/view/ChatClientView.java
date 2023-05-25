@@ -21,7 +21,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import main.swe4.client.controller.EventListener;
+import main.swe4.client.controller.ViewEventHandler;
 import main.swe4.common.Chat;
 import main.swe4.common.Message;
 
@@ -44,7 +44,7 @@ public class ChatClientView extends Application {
 	private final Button lensButton = new Button();
 	private final TextField searchField = new TextField();
 	private VBox chatsPane;
-	private EventListener eventListener;
+	private ViewEventHandler eventHandler;
 
 	// chat creation variables
 	private final TextField createChatNameField = new TextField();
@@ -53,8 +53,8 @@ public class ChatClientView extends Application {
 	private ButtonType chatCreateButton;
 
 
-	public void setEventListener(EventListener listener) {
-		this.eventListener = listener;
+	public void setEventHandler(ViewEventHandler eventHandler) {
+		this.eventHandler = eventHandler;
 	}
 
 	@Override
@@ -220,9 +220,7 @@ public class ChatClientView extends Application {
 	private void createChatSelectionPane(ListView<Chat> chatPane) {
 		VBox.setVgrow(chatPane, Priority.ALWAYS);
 
-		for (var chat : chats) {
-			chatPane.getItems().add(chat);
-		}
+		updateChats();
 
 		// Customize the appearance of each list cell
 		chatPane.setCellFactory(param -> new ListCell<>() {
@@ -262,7 +260,7 @@ public class ChatClientView extends Application {
 						Dialog<ButtonType> dialog = createUserActionDialog("Unban", item);
 						dialog.showAndWait();
 					});
-					chatDeleteMenuItem.setOnAction(event -> eventListener.handleDeleteChat(item));
+					chatDeleteMenuItem.setOnAction(event -> eventHandler.handleDeleteChatInView(item));
 
 					// Add menu items to the popup menu
 					contextMenu.getItems().addAll(chatUnbanMenuItem, chatDeleteMenuItem, banUserMenuItem);
@@ -276,6 +274,13 @@ public class ChatClientView extends Application {
 				}
 			}
 		});
+	}
+
+	public void updateChats() {
+		chatPane.getItems().clear();
+		for (var chat : chats) {
+			chatPane.getItems().add(chat);
+		}
 	}
 
 	private Dialog<ButtonType> createUserActionDialog(String action, Chat chat) {
@@ -318,9 +323,9 @@ public class ChatClientView extends Application {
 			if (buttonType == confirmButton) {
 				// Perform the appropriate action based on the provided parameter
 				if (action.equals("Ban")) {
-					eventListener.handleBanUser(chat, userInputField.getText());
+					eventHandler.handleBanUserInView(chat, userInputField.getText());
 				} else if (action.equals("Unban")) {
-					eventListener.handleUnbanUser(chat, userInputField.getText());
+					eventHandler.handleUnbanUserInView(chat, userInputField.getText());
 				}
 			}
 			return null;

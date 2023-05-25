@@ -99,4 +99,27 @@ public class FakeDatabase implements Database {
 				.findFirst()
 				.orElse(null);
 	}
+
+	@Override
+	public void banUser(Chat chat, User user) throws RemoteException {
+		var dbChat = chats.get(chat.getName());
+
+		if (dbChat != null) {
+			var users = dbChat.getUsers();
+			var bannedUsers = dbChat.getBannedUsers();
+
+			users.remove(user);
+			bannedUsers.add(user);
+		}
+	}
+
+	@Override
+	public void unbanUser(Chat chat, User user) throws RemoteException {
+		var dbChat = chats.get(chat.getName());
+
+		if (dbChat != null) {
+			var bannedUsers = dbChat.getBannedUsers();
+			bannedUsers.remove(user);
+		}
+	}
 }
