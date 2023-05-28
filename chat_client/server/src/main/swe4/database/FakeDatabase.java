@@ -1,16 +1,14 @@
 package main.swe4.database;
 
-import main.swe4.common.Chat;
-import main.swe4.common.Database;
-import main.swe4.common.Message;
-import main.swe4.common.User;
+import main.swe4.common.datamodel.Chat;
+import main.swe4.common.datamodel.Message;
+import main.swe4.common.datamodel.User;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FakeDatabase implements Database {
+public class FakeDatabase {
 	private static FakeDatabase instance;
 	private final ArrayList<User> users = new ArrayList<>();
 	private final Map<String, Chat> chats = new HashMap<>();
@@ -62,64 +60,11 @@ public class FakeDatabase implements Database {
 		return instance;
 	}
 
-	@Override
-	public Chat getChat(String name) throws RemoteException {
-		return chats.get(name);
-	}
-
-	@Override
-	public Map<String, Chat> getChats() throws RemoteException {
+	public Map<String, Chat> getChats() {
 		return chats;
 	}
 
-	@Override
-	public ArrayList<Chat> getChatsFor(User user) throws RemoteException {
-		var chatsWithUser = chats.values()
-				.stream()
-				.filter(chat -> chat.getUsers().contains(user))
-				.toList();
-
-		return new ArrayList<>(chatsWithUser);
-	}
-
-	@Override
-	public void addChat(Chat chat) throws RemoteException {
-		chats.put(chat.getName(), chat);
-	}
-
-	@Override
-	public void removeChat(Chat chat) throws RemoteException {
-		chats.remove(chat.getName());
-	}
-
-	@Override
-	public User getUser(String username) throws RemoteException {
-		return users.stream()
-				.filter(user -> user.getUsername().equals(username))
-				.findFirst()
-				.orElse(null);
-	}
-
-	@Override
-	public void banUser(Chat chat, User user) throws RemoteException {
-		var dbChat = chats.get(chat.getName());
-
-		if (dbChat != null) {
-			var users = dbChat.getUsers();
-			var bannedUsers = dbChat.getBannedUsers();
-
-			users.remove(user);
-			bannedUsers.add(user);
-		}
-	}
-
-	@Override
-	public void unbanUser(Chat chat, User user) throws RemoteException {
-		var dbChat = chats.get(chat.getName());
-
-		if (dbChat != null) {
-			var bannedUsers = dbChat.getBannedUsers();
-			bannedUsers.remove(user);
-		}
+	public ArrayList<User> getUsers() {
+		return users;
 	}
 }

@@ -4,27 +4,38 @@ import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import main.swe4.client.view.ChatClientView;
-import main.swe4.common.*;
+import main.swe4.common.Action;
+import main.swe4.common.communication.ChatsMessagesHandler;
+import main.swe4.common.communication.ServerConnection;
+import main.swe4.common.communication.ServerRequestHandler;
+import main.swe4.common.database.Database;
+import main.swe4.common.datamodel.Chat;
+import main.swe4.common.datamodel.Message;
+import main.swe4.common.datamodel.User;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class ChatViewController implements ViewEventHandler, ServerEventHandler {
+public class ChatViewController implements ViewEventHandler, Serializable, ChatsMessagesHandler {
 
 	private final Database database;
-	private final ChatClientView view;
-	private User currentUser;
-
+	private final ServerConnection connection;
+	private final ServerRequestHandler serverRequestHandler;
+	private transient final ChatClientView view;
 	ArrayList<Chat> chats;
+	private User currentUser;
 
 	// TODO: add list for chats and messages, the server will provide the data, it will be stored
 	// in the database and the client will get it from there, the client will only have to update
 	// the view by adding the new data to the list and then calling the view's update method
 
-	ChatViewController(Database database, ChatClientView view) {
+	ChatViewController(Database database, ServerConnection connection, ChatClientView view, ServerRequestHandler serverRequestHandler) {
 		this.database = database;
+		this.connection = connection;
 		this.view = view;
+		this.serverRequestHandler = serverRequestHandler;
 
 		view.setEventHandler(this);
 
@@ -41,25 +52,25 @@ public class ChatViewController implements ViewEventHandler, ServerEventHandler 
 
 		view.setUser(user.getUsername());
 
-		tryWithDatabase(() -> {
+		tryWithConnection(() -> {
 			chats = (ArrayList<Chat>) database.getChatsFor(user);
 			view.setChats(chats);
 			view.updateChats();
 		});
+
+		tryWithConnection(() -> {
+			connection.registerClient(serverRequestHandler, user);
+		});
 	}
 
 	@Override
-	public void hasConnection() throws RemoteException {
-	}
-
-	@Override
-	public void handleNewChatFromServer(Chat chat) throws RemoteException {
+	public void handleNewChatFromServer(Chat chat) {
 		chats.add(chat);
 		view.updateChats();
 	}
 
 	@Override
-	public void handleNewMessageFromServer(Chat chat, Message message) throws RemoteException {
+	public void handleNewMessageFromServer(Chat chat, Message message) {
 		var index = chats.indexOf(chat);
 		var chatToUpdate = chats.get(index);
 		chatToUpdate.addMessage(message);
@@ -96,7 +107,7 @@ public class ChatViewController implements ViewEventHandler, ServerEventHandler 
 					view.showToast("User already banned");
 				} else {
 
-					tryWithDatabase(() -> {
+					tryWithConnection(() -> {
 						database.banUser(chat, user);
 						view.showToast("User banned");
 					});
@@ -139,7 +150,7 @@ public class ChatViewController implements ViewEventHandler, ServerEventHandler 
 	}
 
 	private void messageSearchAction(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-		tryWithDatabase(() -> {
+		tryWithConnection(() -> {
 			var currentChatName = view.getCurrentChatName();
 			var currentChat = database.getChat(currentChatName);
 			var messages = currentChat.getMessages();
@@ -167,7 +178,7 @@ public class ChatViewController implements ViewEventHandler, ServerEventHandler 
 
 	private void chatPaneClickEvent(ObservableValue<? extends Chat> obs, Chat oldValue, Chat newValue) {
 		if (newValue != null && !newValue.equals(oldValue)) {
-			tryWithDatabase(() -> {
+			tryWithConnection(() -> {
 				var chat = database.getChat(newValue.getName());
 				var chatName = chat.getName();
 
@@ -194,7 +205,7 @@ public class ChatViewController implements ViewEventHandler, ServerEventHandler 
 	}
 
 	private void createChatButtonAction() {
-		tryWithDatabase(() -> {
+		tryWithConnection(() -> {
 			var createChatNameField = view.getCreateChatNameField();
 			var createChatButton = view.getChatCreateButtonNode();
 			var chatPane = view.getChatPane();
@@ -226,7 +237,7 @@ public class ChatViewController implements ViewEventHandler, ServerEventHandler 
 	}
 
 	private void sendButtonAction() {
-		tryWithDatabase(() -> {
+		tryWithConnection(() -> {
 			var messageField = view.getMessageField();
 			var message = messageField.getText();
 			var chat = database.getChat(view.getCurrentChatName());
@@ -237,10 +248,11 @@ public class ChatViewController implements ViewEventHandler, ServerEventHandler 
 				view.showToast("No chat selected");
 			} else {
 				var newMessage = new Message(currentUser, message);
-				chat.addMessage(newMessage);
-
-				messageField.clear();
-				updateMessages(chat.getMessages());
+				// TODO thats database stuff
+				tryWithConnection(() -> {
+					database.addMessage(chat, newMessage);
+					messageField.clear();
+				});
 			}
 		});
 	}
@@ -252,7 +264,7 @@ public class ChatViewController implements ViewEventHandler, ServerEventHandler 
 	}
 
 	private void deleteChat(Chat chat) {
-		tryWithDatabase(() -> {
+		tryWithConnection(() -> {
 			database.removeChat(chat);
 
 			var chats = database.getChats();
@@ -273,7 +285,7 @@ public class ChatViewController implements ViewEventHandler, ServerEventHandler 
 		chatArea.getItems().addAll(messages);
 	}
 
-	private void tryWithDatabase(DatabaseAction action) {
+	private void tryWithConnection(Action action) {
 		try {
 			action.perform();
 		} catch (RemoteException remoteException) {

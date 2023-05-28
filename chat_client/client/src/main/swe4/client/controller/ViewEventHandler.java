@@ -1,8 +1,10 @@
 package main.swe4.client.controller;
 
-import main.swe4.common.Chat;
+import main.swe4.common.datamodel.Chat;
 
-public interface ViewEventHandler {
+import java.io.Serializable;
+
+public interface ViewEventHandler extends Serializable {
 	void handleDeleteChatInView(Chat chat);
 	void handleBanUserInView(Chat chat, String username);
 	void handleUnbanUserInView(Chat chat, String username);

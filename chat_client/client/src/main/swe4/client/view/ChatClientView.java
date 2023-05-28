@@ -22,18 +22,23 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import main.swe4.client.controller.ViewEventHandler;
-import main.swe4.common.Chat;
-import main.swe4.common.Message;
+import main.swe4.common.datamodel.Chat;
+import main.swe4.common.datamodel.Message;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class ChatClientView extends Application {
+	private final Button sendButton = new Button("Send");
+	private final ListView<Chat> chatPane = new ListView<>();
+	private final Button lensButton = new Button();
+	private final TextField searchField = new TextField();
+	// chat creation variables
+	private final TextField createChatNameField = new TextField();
 	private Stage primaryStage;
 	private TextField messageField;
-	private final Button sendButton = new Button("Send");
 	private ListView<Message> chatArea;
-	private final ListView<Chat> chatPane = new ListView<>();
 	private ArrayList<Chat> chats;
 	private String username;
 	private String currentChatName;
@@ -41,17 +46,11 @@ public class ChatClientView extends Application {
 	private MenuItem chatUnbanMenuItem;
 	private MenuItem chatDeleteMenuItem;
 	private MenuItem banUserMenuItem;
-	private final Button lensButton = new Button();
-	private final TextField searchField = new TextField();
 	private VBox chatsPane;
 	private ViewEventHandler eventHandler;
-
-	// chat creation variables
-	private final TextField createChatNameField = new TextField();
-	private final Dialog<ButtonType> createChatDialog = createChatCreationDialog();
 	private Node chatCreateButtonNode;
 	private ButtonType chatCreateButton;
-
+	private final Dialog<ButtonType> createChatDialog = createChatCreationDialog();
 
 	public void setEventHandler(ViewEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
@@ -371,7 +370,7 @@ public class ChatClientView extends Application {
 		messageField = new TextField();
 		messageField.setId("message-field");
 		messageField.setPromptText("Enter your message here");
-		
+
 		sendButton.setId("send-button");
 
 		HBox messageSendPane = new HBox(messageField, sendButton);
@@ -423,6 +422,7 @@ public class ChatClientView extends Application {
 			return null;
 		});
 	}
+
 	public TextField getCreateChatNameField() {
 		return createChatNameField;
 	}
@@ -447,6 +447,10 @@ public class ChatClientView extends Application {
 		return currentChatName;
 	}
 
+	public void setCurrentChatName(String currentChatName) {
+		this.currentChatName = currentChatName;
+	}
+
 	public ListView<Message> getChatArea() {
 		return chatArea;
 	}
@@ -462,9 +466,6 @@ public class ChatClientView extends Application {
 	public void setUserPane(HBox userPane) {
 		this.userPane = userPane;
 	}
-	public void setCurrentChatName(String currentChatName) {
-		this.currentChatName = currentChatName;
-	}
 
 	public void updateChatHeaderPane(HBox userPane) {
 		chatsPane.getChildren().remove(0);
@@ -474,6 +475,7 @@ public class ChatClientView extends Application {
 	public ListView<Chat> getChatPane() {
 		return chatPane;
 	}
+
 	public void setChatPaneClickEvent(ChangeListener<Chat> listener) {
 		chatPane.getSelectionModel().selectedItemProperty().addListener(listener);
 	}
