@@ -5,9 +5,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import main.swe4.client.view.ChatClientView;
 import main.swe4.common.Action;
-import main.swe4.common.communication.ChatsMessagesHandler;
 import main.swe4.common.communication.ServerConnection;
-import main.swe4.common.communication.ServerRequestHandler;
+import main.swe4.common.communication.ServerEventHandler;
 import main.swe4.common.database.Database;
 import main.swe4.common.datamodel.Chat;
 import main.swe4.common.datamodel.Message;
@@ -18,11 +17,11 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class ChatViewController implements ViewEventHandler, Serializable, ChatsMessagesHandler {
+public class ChatViewController implements ViewEventHandler, Serializable {
 
 	private final Database database;
 	private final ServerConnection connection;
-	private final ServerRequestHandler serverRequestHandler;
+	private final ServerEventHandler serverRequestHandler;
 	private transient final ChatClientView view;
 	ArrayList<Chat> chats;
 	private User currentUser;
@@ -31,11 +30,11 @@ public class ChatViewController implements ViewEventHandler, Serializable, Chats
 	// in the database and the client will get it from there, the client will only have to update
 	// the view by adding the new data to the list and then calling the view's update method
 
-	ChatViewController(Database database, ServerConnection connection, ChatClientView view, ServerRequestHandler serverRequestHandler) {
+	ChatViewController(Database database, ServerConnection connection, ChatClientView view, ServerEventHandler serverEventHandler) {
 		this.database = database;
 		this.connection = connection;
 		this.view = view;
-		this.serverRequestHandler = serverRequestHandler;
+		this.serverRequestHandler = serverEventHandler;
 
 		view.setEventHandler(this);
 
@@ -63,13 +62,11 @@ public class ChatViewController implements ViewEventHandler, Serializable, Chats
 		});
 	}
 
-	@Override
 	public void handleNewChatFromServer(Chat chat) {
 		chats.add(chat);
 		view.updateChats();
 	}
 
-	@Override
 	public void handleNewMessageFromServer(Chat chat, Message message) {
 		var index = chats.indexOf(chat);
 		var chatToUpdate = chats.get(index);
@@ -281,8 +278,11 @@ public class ChatViewController implements ViewEventHandler, Serializable, Chats
 	private void updateMessages(ArrayList<Message> messages) {
 		var chatArea = view.getChatArea();
 
-		chatArea.getItems().clear();
-		chatArea.getItems().addAll(messages);
+
+		Platform.runLater(() -> {
+			chatArea.getItems().clear();
+			chatArea.getItems().addAll(messages);
+		});
 	}
 
 	private void tryWithConnection(Action action) {

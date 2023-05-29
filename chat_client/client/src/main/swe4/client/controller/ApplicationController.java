@@ -5,9 +5,7 @@ import javafx.stage.Stage;
 import main.swe4.client.view.ChatClientView;
 import main.swe4.client.view.LoginView;
 import main.swe4.client.view.RegisterView;
-import main.swe4.common.communication.ChatsMessagesHandler;
 import main.swe4.common.communication.ServerConnection;
-import main.swe4.common.communication.ServerRequestHandler;
 import main.swe4.common.database.Database;
 import main.swe4.common.datamodel.User;
 
@@ -24,7 +22,6 @@ public class ApplicationController {
 	Database database;
 	ServerConnection connection;
 	static ChatViewController chatViewController;
-	static ChatsMessagesHandler chatsMessagesHandler;
 	LoginRegisterController loginRegisterController;
 	String serverUrlAndPort;
 
@@ -46,15 +43,11 @@ public class ApplicationController {
 
 		ServerRequestHandler serverRequestHandler = new ServerRequestHandler();
 		chatViewController = new ChatViewController(database, connection, chatClientView, serverRequestHandler);
-		chatsMessagesHandler = (ChatsMessagesHandler) chatViewController;
-		UnicastRemoteObject.exportObject(chatViewController, 0);
+		serverRequestHandler.setController(chatViewController);
+		UnicastRemoteObject.exportObject(serverRequestHandler, 0);
 
 
 		loginRegisterController = new LoginRegisterController(loginView, registerView, database, this);
-	}
-
-	public static ChatsMessagesHandler getController() {
-		return chatsMessagesHandler;
 	}
 
 	public void run() {

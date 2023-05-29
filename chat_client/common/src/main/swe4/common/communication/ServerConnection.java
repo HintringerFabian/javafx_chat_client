@@ -7,5 +7,5 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface ServerConnection extends Remote, Serializable {
-	void registerClient(ServerRequestHandler client, User user) throws RemoteException;
+	void registerClient(ServerEventHandler client, User user) throws RemoteException;
 }

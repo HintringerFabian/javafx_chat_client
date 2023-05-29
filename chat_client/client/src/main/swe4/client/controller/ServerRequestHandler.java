@@ -1,6 +1,6 @@
-package main.swe4.common.communication;
+package main.swe4.client.controller;
 
-import main.swe4.client.controller.ApplicationController;
+import main.swe4.common.communication.ServerEventHandler;
 import main.swe4.common.datamodel.Chat;
 import main.swe4.common.datamodel.Message;
 
@@ -8,11 +8,10 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 
 public class ServerRequestHandler implements ServerEventHandler, Serializable {
+	private transient ChatViewController controller;
 
-	private ChatsMessagesHandler controller() {
-		var controller = ApplicationController.getController();
-
-		return (ChatsMessagesHandler) controller;
+	public void setController(ChatViewController controller) {
+		this.controller = controller;
 	}
 
 	@Override
@@ -22,13 +21,11 @@ public class ServerRequestHandler implements ServerEventHandler, Serializable {
 
 	@Override
 	public void handleNewChatFromServer(Chat chat) throws RemoteException {
-		var controller = controller();
 		controller.handleNewChatFromServer(chat);
 	}
 
 	@Override
 	public void handleNewMessageFromServer(Chat chat, Message message) throws RemoteException {
-		var controller = controller();
 		controller.handleNewMessageFromServer(chat, message);
 	}
 }

@@ -61,4 +61,13 @@ public class Chat implements Serializable {
 	public ArrayList<User> getBannedUsers() {
 		return bannedUsers;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Chat otherChat)) {
+			return false;
+		}
+
+		return name.equals(otherChat.name) && admin.equals(otherChat.admin);
+	}
 }

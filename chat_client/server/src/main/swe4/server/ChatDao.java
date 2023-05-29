@@ -1,9 +1,8 @@
 package main.swe4.server;
 
-import main.swe4.common.*;
+import main.swe4.common.Action;
 import main.swe4.common.communication.ChatServer;
 import main.swe4.common.communication.ServerEventHandler;
-import main.swe4.common.communication.ServerRequestHandler;
 import main.swe4.common.datamodel.Chat;
 import main.swe4.common.datamodel.Message;
 import main.swe4.common.datamodel.User;
@@ -30,7 +29,7 @@ public class ChatDao implements ChatServer {
 	}
 
 	@Override
-	public void registerClient(ServerRequestHandler client, User user) {
+	public void registerClient(ServerEventHandler client, User user) {
 		clients.put(user, client);
 	}
 
