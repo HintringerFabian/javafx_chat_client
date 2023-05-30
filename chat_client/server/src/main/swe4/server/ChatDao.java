@@ -125,6 +125,7 @@ public class ChatDao implements ChatServer {
 
 	@Override
 	public void addMessage(Chat chat, Message message) throws RemoteException {
+		// TODO there is a bug where a banned user can still send messages
 		var chats = database.getChats();
 		var dbChat = chats.get(chat.getName());
 
