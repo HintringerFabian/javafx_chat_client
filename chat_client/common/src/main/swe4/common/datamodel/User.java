@@ -28,6 +28,23 @@ public class User implements Serializable {
 			return false;
 		}
 
-		return this.fullName.equals(otherUser.fullName);
+		return this.fullName.equals(otherUser.fullName) && this.username.equals(otherUser.username);
+	}
+
+	@Override
+	public int hashCode() {
+		return hashString(fullName) + hashString(username);
+	}
+
+	private int hashString(String str) {
+		// Prime numbers for hashing
+		int[] primes = { 31, 37, 41, 43, 47, 53, 59 };
+
+		int hash = 1;
+		for (int i = 0; i < str.length(); i++) {
+			char ch = str.charAt(i);
+			hash = hash * primes[i % primes.length] + ch;
+		}
+		return hash;
 	}
 }

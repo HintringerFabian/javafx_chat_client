@@ -28,4 +28,5 @@ public interface Database extends Remote, Serializable {
 	void banUser(Chat chat, User user) throws RemoteException;
 
 	void unbanUser(Chat chat, User user) throws RemoteException;
+	void addUser(Chat chat, User user) throws RemoteException;
 }

@@ -17,8 +17,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-// TODO: There is an error when creating a chat, it will be shown 2 times in the chat list, but only for the person creating the chat
-// TODO: if a second person enters the chat, the person can send messages, but not receive them... sad
 public class ChatViewController implements ViewEventHandler, Serializable {
 
 	private final Database database;
@@ -62,7 +60,10 @@ public class ChatViewController implements ViewEventHandler, Serializable {
 
 	public void handleNewChatFromServer(Chat chat) {
 		chats.add(chat);
-		view.updateChats();
+		Platform.runLater(() -> {
+			view.setChats(chats);
+			view.updateChats();
+		});
 	}
 
 	public void handleNewMessageFromServer(Chat chat, Message message) {
@@ -214,7 +215,7 @@ public class ChatViewController implements ViewEventHandler, Serializable {
 				if (newChat.getBannedUsers().contains(currentUser)) {
 					view.showToast("You are banned from this chat");
 				} else {
-					newChat.addUser(currentUser);
+					database.addUser(newChat, currentUser);
 					view.showToast("Chat already exists, you will be added to it");
 				}
 			} else {
@@ -223,8 +224,6 @@ public class ChatViewController implements ViewEventHandler, Serializable {
 
 				database.addChat(newChat);
 			}
-
-			chatPane.getItems().add(newChat);
 
 			createChatNameField.clear();
 			createChatButton.setDisable(true);
@@ -274,7 +273,6 @@ public class ChatViewController implements ViewEventHandler, Serializable {
 
 	private void updateMessages(ArrayList<Message> messages) {
 		var chatArea = view.getChatArea();
-
 
 		Platform.runLater(() -> {
 			chatArea.getItems().clear();

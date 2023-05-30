@@ -1,12 +1,12 @@
 package swe4.server;
 
 import swe4.common.Action;
+import swe4.common.communication.ChatServer;
 import swe4.common.communication.ServerEventHandler;
 import swe4.common.datamodel.Chat;
 import swe4.common.datamodel.Message;
 import swe4.common.datamodel.User;
 import swe4.database.FakeDatabase;
-import swe4.common.communication.ChatServer;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -52,7 +52,6 @@ public class ChatDao implements ChatServer {
 	}
 
 	public void sendNewChat(Chat chat) {
-		// i mean we create a new chat? or is one user added to the chat? what happens here?
 		var users = chat.getUsers();
 
 		var clientIterator = clients.entrySet().iterator();
@@ -69,6 +68,11 @@ public class ChatDao implements ChatServer {
 		}
 	}
 
+	public void sendNewChat(Chat chat, User user) {
+		var client = clients.get(user);
+		tryHandle(() -> client.handleNewChatFromServer(chat), null, client);
+	}
+
 	private void checkConnection() {
 		ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 		executor.scheduleAtFixedRate(() -> {
@@ -78,23 +82,6 @@ public class ChatDao implements ChatServer {
 				tryHandle(client::hasConnection, clientIterator, client);
 			}
 		}, 0, 3, TimeUnit.SECONDS);
-	}
-
-	private void tryHandle(Action action, Iterator<Map.Entry<User, ServerEventHandler>> clientIter, ServerEventHandler client) {
-		try {
-			// we want to perform an action on the client
-			action.perform();
-		} catch (RemoteException e) {
-			e.printStackTrace();
-			try {
-				// as we got an exception, we assume that the client is not connected anymore
-				// lets test it
-				client.hasConnection();
-			} catch (RemoteException ex) {
-				// remove the client from the list, as it is not connected anymore, we tried twice
-				clientIter.remove();
-			}
-		}
 	}
 
 	@Override
@@ -178,6 +165,35 @@ public class ChatDao implements ChatServer {
 		if (dbChat != null) {
 			var bannedUsers = dbChat.getBannedUsers();
 			bannedUsers.remove(user);
+		}
+	}
+
+	@Override
+	public void addUser(Chat chat, User user) throws RemoteException {
+		var dbChat = database.getChats().get(chat.getName());
+
+		if (dbChat != null) {
+			var users = dbChat.getUsers();
+			users.add(user);
+
+			sendNewChat(chat, user);
+		}
+	}
+
+	private void tryHandle(Action action, Iterator<Map.Entry<User, ServerEventHandler>> clientIter, ServerEventHandler client) {
+		try {
+			// we want to perform an action on the client
+			action.perform();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			try {
+				// as we got an exception, we assume that the client is not connected anymore
+				// lets test it
+				client.hasConnection();
+			} catch (RemoteException ex) {
+				// remove the client from the list, as it is not connected anymore, we tried twice
+				if (clientIter != null) clientIter.remove();
+			}
 		}
 	}
 }
