@@ -8,7 +8,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class RegisterView extends LoginView {
-	
+
 	@SuppressWarnings("FieldCanBeLocal")
 	private TextField nameField;
 

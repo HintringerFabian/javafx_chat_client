@@ -9,6 +9,8 @@ import java.rmi.RemoteException;
 
 public interface ServerEventHandler extends Remote, Serializable {
 	void hasConnection() throws RemoteException;
+
 	void handleNewChatFromServer(Chat chat) throws RemoteException;
+
 	void handleNewMessageFromServer(Chat chat, Message message) throws RemoteException;
 }

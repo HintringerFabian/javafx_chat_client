@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class User implements Serializable {
 	private final String username;
+	// TODO support passwords
 	//private String password;
 	private final String fullName;
 
@@ -38,7 +39,7 @@ public class User implements Serializable {
 
 	private int hashString(String str) {
 		// Prime numbers for hashing
-		int[] primes = { 31, 37, 41, 43, 47, 53, 59 };
+		int[] primes = {31, 37, 41, 43, 47, 53, 59};
 
 		int hash = 1;
 		for (int i = 0; i < str.length(); i++) {

@@ -14,22 +14,21 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.util.Objects;
 
 public class LoginView extends Application {
 
-	Button leftButton;
-	Button rightButton;
-	TextField usernameField;
-	PasswordField passwordField;
-	BorderPane loginScreen;
-	Stage loginStage;
+	protected Button leftButton;
+	protected Button rightButton;
+	protected TextField usernameField;
+	protected PasswordField passwordField;
+	protected BorderPane loginScreen;
+	protected Stage loginStage;
 
-	int sceneWidth;
-	int sceneHeight;
-	String title;
-	String leftButtonText;
-	String rightButtonText;
+	protected int sceneWidth;
+	protected int sceneHeight;
+	protected String title;
+	protected String leftButtonText;
+	protected String rightButtonText;
 
 	public LoginView() {
 		title = "Login";

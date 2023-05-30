@@ -26,9 +26,7 @@ import swe4.common.datamodel.Chat;
 import swe4.common.datamodel.Message;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class ChatClientView extends Application {
 	private final Button sendButton = new Button("Send");
@@ -58,7 +56,7 @@ public class ChatClientView extends Application {
 	}
 
 	@Override
-	public void start(Stage stage) throws Exception {
+	public void start(Stage stage) {
 		primaryStage = stage;
 		stage.setResizable(true);
 
@@ -149,7 +147,6 @@ public class ChatClientView extends Application {
 		dialog.setHeaderText("Create or enter a chat");
 
 		// Create the chat name input field
-
 		createChatNameField.setPromptText("Enter chat name");
 
 		// Create the dialog buttons
@@ -157,7 +154,6 @@ public class ChatClientView extends Application {
 		dialog.getDialogPane().getButtonTypes().addAll(chatCreateButton, ButtonType.CANCEL);
 
 		// Enable/disable the create button based on input validation
-
 		chatCreateButtonNode = dialog.getDialogPane().lookupButton(chatCreateButton);
 		chatCreateButtonNode.setDisable(true);
 

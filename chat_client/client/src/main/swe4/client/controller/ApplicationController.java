@@ -16,14 +16,11 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class ApplicationController {
-	static ChatViewController chatViewController;
-	LoginView loginView;
-	RegisterView registerView;
-	ChatClientView chatClientView;
-	Database database;
-	ServerConnection connection;
-	LoginRegisterController loginRegisterController;
-	String serverUrlAndPort;
+	private static ChatViewController chatViewController;
+	private final LoginView loginView;
+	private final RegisterView registerView;
+	private final ChatClientView chatClientView;
+	private final Database database;
 
 	public ApplicationController(
 			LoginView loginView,
@@ -31,10 +28,9 @@ public class ApplicationController {
 			ChatClientView chatClientView,
 			String serverUrlAndPort
 	) throws RemoteException, MalformedURLException, NotBoundException {
-		this.serverUrlAndPort = serverUrlAndPort;
 
 		this.database = (Database) Naming.lookup(serverUrlAndPort);
-		this.connection = (ServerConnection) Naming.lookup(serverUrlAndPort);
+		ServerConnection connection = (ServerConnection) Naming.lookup(serverUrlAndPort);
 
 		this.loginView = loginView;
 		this.registerView = registerView;
@@ -46,8 +42,7 @@ public class ApplicationController {
 		serverRequestHandler.setController(chatViewController);
 		UnicastRemoteObject.exportObject(serverRequestHandler, 0);
 
-
-		loginRegisterController = new LoginRegisterController(loginView, registerView, database, this);
+		LoginRegisterController loginRegisterController = new LoginRegisterController(loginView, registerView, database, this);
 	}
 
 	public void run() {
