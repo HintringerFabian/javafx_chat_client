@@ -41,6 +41,7 @@ public class Chat implements Serializable {
 		messages.add(message);
 	}
 
+	// TODO check why this is needed
 	public void banUser(User user) {
 		bannedUsers.add(user);
 		users.remove(user);
@@ -54,6 +55,7 @@ public class Chat implements Serializable {
 		users.add(user);
 	}
 
+	// TODO check why this is needed
 	public void unbanUser(User user) {
 		bannedUsers.remove(user);
 	}

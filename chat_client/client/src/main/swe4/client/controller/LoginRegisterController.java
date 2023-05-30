@@ -2,17 +2,17 @@ package swe4.client.controller;
 
 import swe4.client.view.LoginView;
 import swe4.client.view.RegisterView;
-import swe4.common.database.Database;
+import swe4.common.database.DatabaseService;
 
 public class LoginRegisterController {
 	// needed for login and registration views when functionality is implemented
 	@SuppressWarnings({"unused", "FieldCanBeLocal"})
-	private final Database database;
+	private final DatabaseService database;
 	private final LoginView loginView;
 	private final RegisterView registerView;
 	private final ApplicationController mainController;
 
-	public LoginRegisterController(LoginView loginView, RegisterView registerView, Database database, ApplicationController mainController) {
+	public LoginRegisterController(LoginView loginView, RegisterView registerView, DatabaseService database, ApplicationController mainController) {
 		this.loginView = loginView;
 		this.registerView = registerView;
 		this.database = database;

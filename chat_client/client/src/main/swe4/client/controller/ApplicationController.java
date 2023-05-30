@@ -6,7 +6,7 @@ import swe4.client.view.ChatClientView;
 import swe4.client.view.LoginView;
 import swe4.client.view.RegisterView;
 import swe4.common.communication.ServerConnection;
-import swe4.common.database.Database;
+import swe4.common.database.DatabaseService;
 import swe4.common.datamodel.User;
 
 import java.net.MalformedURLException;
@@ -20,7 +20,7 @@ public class ApplicationController {
 	private final LoginView loginView;
 	private final RegisterView registerView;
 	private final ChatClientView chatClientView;
-	private final Database database;
+	private final DatabaseService database;
 
 	public ApplicationController(
 			LoginView loginView,
@@ -29,7 +29,7 @@ public class ApplicationController {
 			String serverUrlAndPort
 	) throws RemoteException, MalformedURLException, NotBoundException {
 
-		this.database = (Database) Naming.lookup(serverUrlAndPort);
+		this.database = (DatabaseService) Naming.lookup(serverUrlAndPort);
 		ServerConnection connection = (ServerConnection) Naming.lookup(serverUrlAndPort);
 
 		this.loginView = loginView;

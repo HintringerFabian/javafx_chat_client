@@ -1,5 +1,6 @@
 package swe4.database;
 
+import swe4.common.database.Database;
 import swe4.common.datamodel.Chat;
 import swe4.common.datamodel.Message;
 import swe4.common.datamodel.User;
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FakeDatabase {
+public class FakeDatabase implements Database {
 	private static FakeDatabase instance;
 	private final ArrayList<User> users = new ArrayList<>();
 	private final Map<String, Chat> chats = new HashMap<>();

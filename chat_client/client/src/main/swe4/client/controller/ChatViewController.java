@@ -7,7 +7,7 @@ import swe4.client.view.ChatClientView;
 import swe4.common.Action;
 import swe4.common.communication.ServerConnection;
 import swe4.common.communication.ServerEventHandler;
-import swe4.common.database.Database;
+import swe4.common.database.DatabaseService;
 import swe4.common.datamodel.Chat;
 import swe4.common.datamodel.Message;
 import swe4.common.datamodel.User;
@@ -19,14 +19,14 @@ import java.util.stream.Collectors;
 
 public class ChatViewController implements ViewEventHandler, Serializable {
 
-	private final Database database;
+	private final DatabaseService database;
 	private final ServerConnection connection;
 	private final ServerEventHandler serverRequestHandler;
 	private transient final ChatClientView view;
 	ArrayList<Chat> chats;
 	private User currentUser;
 
-	ChatViewController(Database database, ServerConnection connection, ChatClientView view, ServerEventHandler serverEventHandler) {
+	ChatViewController(DatabaseService database, ServerConnection connection, ChatClientView view, ServerEventHandler serverEventHandler) {
 		this.database = database;
 		this.connection = connection;
 		this.view = view;

@@ -3,10 +3,10 @@ package swe4.server;
 import swe4.common.Action;
 import swe4.common.communication.ChatServer;
 import swe4.common.communication.ServerEventHandler;
+import swe4.common.database.Database;
 import swe4.common.datamodel.Chat;
 import swe4.common.datamodel.Message;
 import swe4.common.datamodel.User;
-import swe4.database.FakeDatabase;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -19,10 +19,10 @@ import java.util.concurrent.TimeUnit;
 
 public class ChatDao implements ChatServer {
 	private final ConcurrentHashMap<User, ServerEventHandler> clients = new ConcurrentHashMap<>();
-	private final FakeDatabase database;
+	private final Database database;
 
-	public ChatDao() {
-		this.database = FakeDatabase.getInstance();
+	public ChatDao(Database database) {
+		this.database = database;
 
 		// start a thread that checks if the clients are still connected
 		new Thread(this::checkConnection).start();
