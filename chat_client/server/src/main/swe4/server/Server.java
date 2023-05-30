@@ -1,6 +1,6 @@
-package main.swe4.server;
+package swe4.server;
 
-import main.swe4.common.communication.ChatServer;
+import swe4.common.communication.ChatServer;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -13,10 +13,6 @@ public class Server {
 
 
 	public static void main(String[] args) throws RemoteException, MalformedURLException {
-		// TODO think of logic:
-		// - how many clients are connected?
-		// - which ports are used?
-		// - how to handle multiple clients?
 
 		var port = Registry.REGISTRY_PORT;
 		var host = "localhost";

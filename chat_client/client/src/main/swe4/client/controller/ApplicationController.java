@@ -1,13 +1,13 @@
-package main.swe4.client.controller;
+package swe4.client.controller;
 
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import main.swe4.client.view.ChatClientView;
-import main.swe4.client.view.LoginView;
-import main.swe4.client.view.RegisterView;
-import main.swe4.common.communication.ServerConnection;
-import main.swe4.common.database.Database;
-import main.swe4.common.datamodel.User;
+import swe4.client.view.ChatClientView;
+import swe4.client.view.LoginView;
+import swe4.client.view.RegisterView;
+import swe4.common.communication.ServerConnection;
+import swe4.common.database.Database;
+import swe4.common.datamodel.User;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -16,12 +16,12 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class ApplicationController {
+	static ChatViewController chatViewController;
 	LoginView loginView;
 	RegisterView registerView;
 	ChatClientView chatClientView;
 	Database database;
 	ServerConnection connection;
-	static ChatViewController chatViewController;
 	LoginRegisterController loginRegisterController;
 	String serverUrlAndPort;
 

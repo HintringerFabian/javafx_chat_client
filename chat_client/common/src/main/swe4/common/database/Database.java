@@ -1,8 +1,8 @@
-package main.swe4.common.database;
+package swe4.common.database;
 
-import main.swe4.common.datamodel.Chat;
-import main.swe4.common.datamodel.Message;
-import main.swe4.common.datamodel.User;
+import swe4.common.datamodel.Chat;
+import swe4.common.datamodel.Message;
+import swe4.common.datamodel.User;
 
 import java.io.Serializable;
 import java.rmi.Remote;

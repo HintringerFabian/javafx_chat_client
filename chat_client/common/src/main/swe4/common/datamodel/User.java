@@ -1,4 +1,4 @@
-package main.swe4.common.datamodel;
+package swe4.common.datamodel;
 
 import java.io.Serializable;
 

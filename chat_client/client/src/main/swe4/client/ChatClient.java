@@ -1,11 +1,11 @@
-package main.swe4.client;
+package swe4.client;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import main.swe4.client.controller.ApplicationController;
-import main.swe4.client.view.ChatClientView;
-import main.swe4.client.view.LoginView;
-import main.swe4.client.view.RegisterView;
+import swe4.client.controller.ApplicationController;
+import swe4.client.view.ChatClientView;
+import swe4.client.view.LoginView;
+import swe4.client.view.RegisterView;
 
 import java.rmi.registry.Registry;
 
@@ -21,13 +21,6 @@ public class ChatClient extends Application {
 		LoginView loginView = new LoginView();
 		RegisterView registerView = new RegisterView();
 		ChatClientView chatClientView = new ChatClientView();
-
-		// TODO add a window which showcases all new system messages - like a log
-		// - new chat created
-		// - new user joined
-		// - user banned
-		// - user left
-		// - user unbanned
 
 		var port = Registry.REGISTRY_PORT;
 		var host = "localhost";

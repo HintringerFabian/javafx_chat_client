@@ -1,22 +1,24 @@
-package main.swe4.client.controller;
+package swe4.client.controller;
 
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import main.swe4.client.view.ChatClientView;
-import main.swe4.common.Action;
-import main.swe4.common.communication.ServerConnection;
-import main.swe4.common.communication.ServerEventHandler;
-import main.swe4.common.database.Database;
-import main.swe4.common.datamodel.Chat;
-import main.swe4.common.datamodel.Message;
-import main.swe4.common.datamodel.User;
+import swe4.client.view.ChatClientView;
+import swe4.common.Action;
+import swe4.common.communication.ServerConnection;
+import swe4.common.communication.ServerEventHandler;
+import swe4.common.database.Database;
+import swe4.common.datamodel.Chat;
+import swe4.common.datamodel.Message;
+import swe4.common.datamodel.User;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+// TODO: There is an error when creating a chat, it will be shown 2 times in the chat list, but only for the person creating the chat
+// TODO: if a second person enters the chat, the person can send messages, but not receive them... sad
 public class ChatViewController implements ViewEventHandler, Serializable {
 
 	private final Database database;
@@ -25,10 +27,6 @@ public class ChatViewController implements ViewEventHandler, Serializable {
 	private transient final ChatClientView view;
 	ArrayList<Chat> chats;
 	private User currentUser;
-
-	// TODO: add list for chats and messages, the server will provide the data, it will be stored
-	// in the database and the client will get it from there, the client will only have to update
-	// the view by adding the new data to the list and then calling the view's update method
 
 	ChatViewController(Database database, ServerConnection connection, ChatClientView view, ServerEventHandler serverEventHandler) {
 		this.database = database;
@@ -245,7 +243,6 @@ public class ChatViewController implements ViewEventHandler, Serializable {
 				view.showToast("No chat selected");
 			} else {
 				var newMessage = new Message(currentUser, message);
-				// TODO thats database stuff
 				tryWithConnection(() -> {
 					database.addMessage(chat, newMessage);
 					messageField.clear();

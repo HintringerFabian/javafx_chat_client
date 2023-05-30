@@ -1,12 +1,12 @@
-package main.swe4.server;
+package swe4.server;
 
-import main.swe4.common.Action;
-import main.swe4.common.communication.ChatServer;
-import main.swe4.common.communication.ServerEventHandler;
-import main.swe4.common.datamodel.Chat;
-import main.swe4.common.datamodel.Message;
-import main.swe4.common.datamodel.User;
-import main.swe4.database.FakeDatabase;
+import swe4.common.Action;
+import swe4.common.communication.ServerEventHandler;
+import swe4.common.datamodel.Chat;
+import swe4.common.datamodel.Message;
+import swe4.common.datamodel.User;
+import swe4.database.FakeDatabase;
+import swe4.common.communication.ChatServer;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -52,7 +52,6 @@ public class ChatDao implements ChatServer {
 	}
 
 	public void sendNewChat(Chat chat) {
-		// TODO it is late i do not know what i am doing anymore, think of what this method should do
 		// i mean we create a new chat? or is one user added to the chat? what happens here?
 		var users = chat.getUsers();
 

@@ -1,4 +1,4 @@
-package main.swe4.client.view;
+package swe4.client.view;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -13,6 +13,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.util.Objects;
 
 public class LoginView extends Application {
@@ -58,7 +59,10 @@ public class LoginView extends Application {
 
 		// Add CSS stylesheet
 		try {
-			scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("../css/login.css")).toExternalForm());
+			// get the absolute path from the relative path
+			File file = new File("client/src/resources/css/login.css");
+			System.out.println(file.toURI());
+			scene.getStylesheets().add(file.toURI().toString());
 		} catch (Exception e) {
 			System.out.println("Error loading stylesheet: " + e.getMessage());
 		}

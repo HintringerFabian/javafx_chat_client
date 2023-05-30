@@ -1,6 +1,7 @@
-package main.swe4.common.communication;
+package swe4.common.communication;
 
-import main.swe4.common.datamodel.User;
+
+import swe4.common.datamodel.User;
 
 import java.io.Serializable;
 import java.rmi.Remote;

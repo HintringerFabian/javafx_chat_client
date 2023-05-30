@@ -1,4 +1,4 @@
-package main.swe4.client.view;
+package swe4.client.view;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
@@ -21,10 +21,11 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import main.swe4.client.controller.ViewEventHandler;
-import main.swe4.common.datamodel.Chat;
-import main.swe4.common.datamodel.Message;
+import swe4.client.controller.ViewEventHandler;
+import swe4.common.datamodel.Chat;
+import swe4.common.datamodel.Message;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -189,7 +190,7 @@ public class ChatClientView extends Application {
 
 		// Add the lens button
 		lensButton.setId("lens-button");
-		String lensPath = loadPicture("../images/lens.png");
+		String lensPath = loadPicture("client/src/resources/images/lens.png");
 		var lensImageView = new ImageView(new Image(lensPath));
 		lensImageView.setFitHeight(20);
 		lensImageView.setFitWidth(20);
@@ -490,7 +491,10 @@ public class ChatClientView extends Application {
 
 	private void loadCss(Scene scene) {
 		try {
-			scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("../css/client.css")).toExternalForm());
+			// get the absolute path from the relative path
+			File file = new File("client/src/resources/css/client.css");
+			System.out.println(file.toURI());
+			scene.getStylesheets().add(file.toURI().toString());
 		} catch (Exception e) {
 			System.err.println("Could not load css file: " + e.getMessage());
 		}
@@ -499,13 +503,9 @@ public class ChatClientView extends Application {
 	private String loadPicture(String path) {
 		String uri = "";
 
-		try {
-			uri = Objects.requireNonNull(getClass().getResource(path)).toExternalForm();
-		} catch (Exception e) {
-			System.err.println("Could not load picture: " + e.getMessage());
-		}
-
-		return uri;
+		File file = new File(path);
+		System.out.println(file.toURI());
+		return file.toURI().toString();
 	}
 
 	public void setUser(String username) {

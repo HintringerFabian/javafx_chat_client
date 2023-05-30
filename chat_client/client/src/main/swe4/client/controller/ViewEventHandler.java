@@ -1,6 +1,7 @@
-package main.swe4.client.controller;
+package swe4.client.controller;
 
-import main.swe4.common.datamodel.Chat;
+
+import swe4.common.datamodel.Chat;
 
 import java.io.Serializable;
 

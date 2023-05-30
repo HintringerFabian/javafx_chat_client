@@ -1,8 +1,8 @@
-package main.swe4.client.controller;
+package swe4.client.controller;
 
-import main.swe4.common.communication.ServerEventHandler;
-import main.swe4.common.datamodel.Chat;
-import main.swe4.common.datamodel.Message;
+import swe4.common.communication.ServerEventHandler;
+import swe4.common.datamodel.Chat;
+import swe4.common.datamodel.Message;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;

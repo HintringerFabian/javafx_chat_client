@@ -1,4 +1,4 @@
-package main.swe4.common;
+package swe4.common;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
