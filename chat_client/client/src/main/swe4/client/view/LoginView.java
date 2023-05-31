@@ -30,6 +30,7 @@ public class LoginView extends Application {
 	protected String title;
 	protected String leftButtonText;
 	protected String rightButtonText;
+	protected ToastNotifier toastNotifier;
 
 	public LoginView() {
 		title = "Login";
@@ -51,11 +52,13 @@ public class LoginView extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.loginStage = stage;
+
 		loginStage.setTitle("Chat Client");
 		loginStage.setResizable(false);
 
 		// Create the scene
 		Scene scene = new Scene(loginScreen, sceneWidth, sceneHeight);
+
 
 		// Add CSS stylesheet
 		try {
@@ -73,6 +76,7 @@ public class LoginView extends Application {
 		});
 
 		loginStage.setScene(scene);
+		this.toastNotifier = new ToastNotifier(loginStage);
 		loginStage.show();
 	}
 
@@ -142,5 +146,9 @@ public class LoginView extends Application {
 	@SuppressWarnings("unused")
 	public String getPassword() {
 		return passwordField.getText();
+	}
+
+	public void showToast(String notification) {
+		toastNotifier.showToast(notification);
 	}
 }

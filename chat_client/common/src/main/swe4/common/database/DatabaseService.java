@@ -30,4 +30,8 @@ public interface DatabaseService extends Remote, Serializable {
 	void unbanUser(Chat chat, User user) throws RemoteException;
 
 	void addUser(Chat chat, User user) throws RemoteException;
+
+	boolean loginUser(String username, String password) throws RemoteException;
+
+	boolean registerUser(String username, String password, String fullName) throws RemoteException;
 }

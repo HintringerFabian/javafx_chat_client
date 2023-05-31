@@ -15,4 +15,6 @@ public interface ServerEventHandler extends Remote, Serializable {
 	void handleNewMessageFromServer(Chat chat, Message message) throws RemoteException;
 
 	void handleNotificationFromServer(String notification) throws RemoteException;
+
+	void handleBanFromServer(Chat chat) throws RemoteException;
 }

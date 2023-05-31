@@ -1,0 +1,13 @@
+MESSAGE=$(cat <<EOF
+USE ChatClient;
+CREATE TABLE message (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    message TEXT NOT NULL,
+    timestamp TIMESTAMP NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(id)
+);
+EOF
+)
+
+echo "$MESSAGE" | docker exec -i mysql mysql

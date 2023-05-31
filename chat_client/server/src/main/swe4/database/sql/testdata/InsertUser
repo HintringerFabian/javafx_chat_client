@@ -1,0 +1,5 @@
+
+INSERT INTO user (username, password, fullName) VALUES
+    ('Admin', 'admin', 'Admin Supreme'),
+    ('Fabian', 'f', 'Fabian the Fabulous'),
+    ('Dom', 'dom', 'Definitely the best chatter');

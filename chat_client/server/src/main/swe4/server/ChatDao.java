@@ -9,6 +9,7 @@ import swe4.common.datamodel.Message;
 import swe4.common.datamodel.User;
 
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -111,8 +112,8 @@ public class ChatDao implements ChatServer {
 
 	@Override
 	public void addChat(Chat chat) throws RemoteException {
-		var chats = database.getChats();
-		chats.put(chat.getName(), chat);
+
+		database.addChat(chat);
 
 		sendNewChat(chat);
 
@@ -136,19 +137,13 @@ public class ChatDao implements ChatServer {
 
 	@Override
 	public void removeChat(Chat chat) throws RemoteException {
-		var chats = database.getChats();
-		chats.remove(chat.getName());
+		database.removeChat(chat);
 	}
 
 	@Override
 	public void addMessage(Chat chat, Message message) throws RemoteException {
 		// TODO there is a bug where a banned user can still send messages
-		var chats = database.getChats();
-		var dbChat = chats.get(chat.getName());
-
-		if (dbChat != null) {
-			dbChat.addMessage(message);
-		}
+		database.addMessage(chat, message);
 
 		sendNewMessage(chat, message);
 	}
@@ -163,41 +158,55 @@ public class ChatDao implements ChatServer {
 		return user;
 	}
 
+	// TODO
 	@Override
 	public void banUser(Chat chat, User user) throws RemoteException {
-		var dbChat = database.getChats().get(chat.getName());
+		try {
+			database.banUser(chat, user);
 
-		if (dbChat != null) {
-			var users = dbChat.getUsers();
-			var bannedUsers = dbChat.getBannedUsers();
+			tryHandle(() -> clients.get(user).handleBanFromServer(chat), null, clients.get(user));
 
-			users.remove(user);
-			bannedUsers.add(user);
+			var notification = "User " + user.getUsername() + " was banned from chat " + chat.getName();
+			notifyUsersExcept(user, notification);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 
+	// TODO
 	@Override
 	public void unbanUser(Chat chat, User user) throws RemoteException {
-		var dbChat = database.getChats().get(chat.getName());
+		database.unbanUser(chat, user);
+	}
 
-		if (dbChat != null) {
-			var bannedUsers = dbChat.getBannedUsers();
-			bannedUsers.remove(user);
+	// TODO
+	@Override
+	public void addUser(Chat chat, User user) throws RemoteException {
+		try {
+			database.addUser(chat, user);
+			sendNewChat(chat, user);
+			var notification = "User " + user.getUsername() + " joined chat " + chat.getName();
+			notifyUsersExcept(user, notification);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void addUser(Chat chat, User user) throws RemoteException {
-		var dbChat = database.getChats().get(chat.getName());
+	public boolean loginUser(String username, String password) {
+		var users = database.getUsers();
+		var user = new User(username, password);
 
-		if (dbChat != null) {
-			var users = dbChat.getUsers();
-			users.add(user);
+		return users.contains(user);
+	}
 
-			sendNewChat(chat, user);
-
-			var notification = "User " + user.getUsername() + " joined chat " + chat.getName();
-			notifyUsersExcept(user, notification);
+	@Override
+	public boolean registerUser(String username, String password, String fullName) {
+		try {
+			database.register(username, password, fullName);
+			return true;
+		} catch (Exception e) {
+			return false;
 		}
 	}
 

@@ -1,0 +1,6 @@
+INSERT INTO message (user_id, message, timestamp) VALUES
+    (2, 'Hello', DATETIME('now')),
+    (3, 'Hi there', DATETIME('now')),
+    (2, 'How are you?', DATETIME('now')),
+    (1, 'This is a secret message', DATETIME('now')
+);

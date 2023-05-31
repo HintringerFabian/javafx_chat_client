@@ -107,9 +107,6 @@ public class ChatViewController implements ViewEventHandler, Serializable {
 						database.banUser(chat, user);
 						view.showToast("User banned");
 					});
-
-					database.banUser(chat, user);
-					view.showToast("User banned");
 				}
 			} catch (RemoteException remoteException) {
 				remoteException.printStackTrace();
@@ -204,7 +201,6 @@ public class ChatViewController implements ViewEventHandler, Serializable {
 		tryWithConnection(() -> {
 			var createChatNameField = view.getCreateChatNameField();
 			var createChatButton = view.getChatCreateButtonNode();
-			var chatPane = view.getChatPane();
 			var chats = database.getChats();
 			var chatName = createChatNameField.getText();
 
@@ -294,6 +290,26 @@ public class ChatViewController implements ViewEventHandler, Serializable {
 	public void handleNotificationFromServer(String notification) {
 		Platform.runLater(() -> {
 			view.showToast(notification);
+		});
+	}
+
+	public void handleBanFromServer(Chat chat) {
+		Platform.runLater(() -> {
+			if (chat.getName().equals(view.getCurrentChatName())) {
+				view.showToast("You have been banned from this chat");
+			}
+		});
+
+		chats.remove(chat);
+
+		if (chat.getName().equals(view.getCurrentChatName())) {
+			Platform.runLater(() -> {
+				view.getChatPane().getSelectionModel().selectFirst();
+			});
+		}
+
+		Platform.runLater(() -> {
+			view.getChatPane().getItems().remove(chat);
 		});
 	}
 }

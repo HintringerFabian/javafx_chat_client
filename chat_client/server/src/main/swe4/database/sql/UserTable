@@ -1,0 +1,12 @@
+USER=$(cat <<EOF
+USE ChatClient;
+CREATE TABLE user (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    fullName VARCHAR(255) NOT NULL
+);
+EOF
+)
+
+echo "$USER" | docker exec -i mysql mysql

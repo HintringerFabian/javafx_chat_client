@@ -1,0 +1,6 @@
+INSERT INTO chat (name, admin_id) VALUES
+    ('Drama Lama', 1),
+    ('The office dudes and dudines', 1),
+    ('Anime Chat', 1),
+    ('Secrets', 1)
+;

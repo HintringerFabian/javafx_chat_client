@@ -33,28 +33,39 @@ public class LoginRegisterController {
 	}
 
 	private void handleLogin() {
-		// TODO: Implement login functionality
-
-		// when login is successful, show chat client view
-		//mainController.switchToView(chatClientView, loginView);
-		mainController.closeView(loginView);
+		boolean verified = false;
 		try {
-			var userName = loginView.getUsername();
-			mainController.startChatClientView(userName);
+			verified = database.loginUser(loginView.getUsername(), loginView.getPassword());
 		} catch (Exception e) {
-			System.out.println("Error starting chat client view: " + e.getMessage());
-			throw new RuntimeException(e);
+			loginView.showToast("There was an error logging in: Please try again.");
 		}
+		handleVerification(verified, loginView);
 	}
 
 	private void handleRegister() {
-		// TODO: Implement register functionality
-
-		// when register is successful, show chat client view
-		//mainController.switchToView(chatClientView, registerView);
-		mainController.closeView(registerView);
+		boolean verified = false;
 		try {
-			var userName = registerView.getUsername();
+			verified = database.registerUser(loginView.getUsername(), loginView.getPassword(), registerView.getFullName());
+		} catch (Exception e) {
+			registerView.showToast("There was an error registering: Please try again.");
+		}
+
+		handleVerification(verified, registerView);
+	}
+
+	public void handleVerification(boolean verified, LoginView view) {
+
+		if(!verified) {
+			var notification = (view == loginView) ? "Login failed: Username or Password incorrect" : "Registration failed: User already exists";
+			view.showToast(notification);
+			return;
+		}
+
+		// when login is successful, show chat client view
+		//mainController.switchToView(chatClientView, loginView);
+		mainController.closeView(view);
+		try {
+			var userName = view.getUsername();
 			mainController.startChatClientView(userName);
 		} catch (Exception e) {
 			System.out.println("Error starting chat client view: " + e.getMessage());

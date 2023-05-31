@@ -17,9 +17,9 @@ class ChatTest {
 
 	@BeforeEach
 	void setUp() {
-		admin = new User("admin", "Admin");
-		user1 = new User("user1", "User1");
-		user2 = new User("user2", "User2");
+		admin = new User("admin", "admin", "Admin");
+		user1 = new User("user1", "user1", "User1");
+		user2 = new User("user2", "user2", "User2");
 		message1 = new Message(user1, "Hello, user1!");
 		message2 = new Message(admin, "Hi, admin!");
 
@@ -66,7 +66,7 @@ class ChatTest {
 
 	@Test
 	void addUser() {
-		var user3 = new User("user3", "User3");
+		var user3 = new User("user3", "user3", "User3");
 		chat.addUser(user3);
 
 		assertEquals(4, chat.getUsers().size());
@@ -118,7 +118,7 @@ class ChatTest {
 
 	@Test
 	void equals_differentAdmin_false() {
-		User differentAdmin = new User("Different Admin", "Different Admin");
+		User differentAdmin = new User("Different Admin", "admin", "Different Admin");
 		Chat otherChat = new Chat("Test Chat", differentAdmin);
 		assertNotEquals(chat, otherChat);
 	}

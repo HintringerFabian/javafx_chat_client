@@ -39,7 +39,7 @@ public class ApplicationController {
 
 		ServerRequestHandler serverRequestHandler = new ServerRequestHandler();
 		chatViewController = new ChatViewController(database, connection, chatClientView, serverRequestHandler);
-		serverRequestHandler.setController(chatViewController);
+		serverRequestHandler.setChatViewController(chatViewController);
 		UnicastRemoteObject.exportObject(serverRequestHandler, 0);
 
 		LoginRegisterController loginRegisterController = new LoginRegisterController(loginView, registerView, database, this);

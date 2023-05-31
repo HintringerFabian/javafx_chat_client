@@ -1,0 +1,8 @@
+INSERT INTO chat_message (chat_name, message_id) VALUES
+    ('Drama Lama', 1),
+    ('Drama Lama', 2),
+    ('Drama Lama', 3),
+    ('The office dudes and dudines', 1),
+    ('The office dudes and dudines', 2),
+    ('Secrets', 4)
+;

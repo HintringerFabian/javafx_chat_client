@@ -72,3 +72,14 @@
     -fx-font-weight: bold;
     -fx-cursor: hand;
 }
+
+.toast-pane {
+    -fx-background-color: #333333;
+    -fx-padding: 8px;
+    -fx-background-radius: 8px;
+}
+
+.toast-label {
+    -fx-text-fill: white;
+    -fx-font-size: 32px;
+}

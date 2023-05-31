@@ -1,0 +1,11 @@
+CHAT=$(cat <<EOF
+USE ChatClient;
+CREATE TABLE chat (
+    name VARCHAR(255) PRIMARY KEY,
+    admin_id INT NOT NULL,
+    FOREIGN KEY (admin_id) REFERENCES user(id)
+);
+EOF
+)
+
+echo "$CHAT" | docker exec -i mysql mysql

@@ -8,10 +8,11 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 
 public class ServerRequestHandler implements ServerEventHandler, Serializable {
-	private transient ChatViewController controller;
+	private transient ChatViewController chatViewController;
+	private transient LoginRegisterController loginRegisterController;
 
-	public void setController(ChatViewController controller) {
-		this.controller = controller;
+	public void setChatViewController(ChatViewController chatViewController) {
+		this.chatViewController = chatViewController;
 	}
 
 	@Override
@@ -21,16 +22,22 @@ public class ServerRequestHandler implements ServerEventHandler, Serializable {
 
 	@Override
 	public void handleNewChatFromServer(Chat chat) throws RemoteException {
-		controller.handleNewChatFromServer(chat);
+		chatViewController.handleNewChatFromServer(chat);
 	}
 
 	@Override
 	public void handleNewMessageFromServer(Chat chat, Message message) throws RemoteException {
-		controller.handleNewMessageFromServer(chat, message);
+		chatViewController.handleNewMessageFromServer(chat, message);
 	}
 
 	@Override
 	public void handleNotificationFromServer(String notification) {
-		controller.handleNotificationFromServer(notification);
+		chatViewController.handleNotificationFromServer(notification);
 	}
+
+	@Override
+	public void handleBanFromServer(Chat chat) {
+		chatViewController.handleBanFromServer(chat);
+	}
+
 }

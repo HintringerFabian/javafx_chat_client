@@ -64,6 +64,21 @@ public class Chat implements Serializable {
 		return bannedUsers;
 	}
 
+	public void setUsers(ArrayList<User> users) {
+		this.users.clear();
+		this.users.addAll(users);
+	}
+
+	public void setBannedUsers(ArrayList<User> bannedUsers) {
+		this.bannedUsers.clear();
+		this.bannedUsers.addAll(bannedUsers);
+	}
+
+	public void setMessages(ArrayList<Message> messages) {
+		this.messages.clear();
+		this.messages.addAll(messages);
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof Chat otherChat)) {

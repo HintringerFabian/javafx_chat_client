@@ -6,14 +6,17 @@ import static swe4.common.Utils.hashString;
 
 public class User implements Serializable {
 	private final String username;
-	// TODO support passwords
-	//private String password;
 	private final String fullName;
+	private final String password;
 
-	public User(String username, String email) {
+	public User(String username, String password, String fullName) {
 		this.username = username;
-		//this.password = password;
-		this.fullName = email;
+		this.password = password;
+		this.fullName = fullName;
+	}
+
+	public User(String username, String password) {
+		this(username, password, "");
 	}
 
 	public String getUsername() {
@@ -25,17 +28,21 @@ public class User implements Serializable {
 		return fullName;
 	}
 
+	public String getPassword() {
+		return password;
+	}
+
 	@Override
 	public boolean equals(Object other) {
 		if (!(other instanceof User otherUser)) {
 			return false;
 		}
 
-		return this.fullName.equals(otherUser.fullName) && this.username.equals(otherUser.username);
+		return this.password.equals(otherUser.password) && this.username.equals(otherUser.username);
 	}
 
 	@Override
 	public int hashCode() {
-		return hashString(fullName) + hashString(username);
+		return hashString(password) + hashString(username);
 	}
 }

@@ -1,0 +1,17 @@
+CHATUSER=$(cat <<EOF
+USE ChatClient;
+INSERT INTO chat_user (chat_id, user_id) VALUES
+    ('Drama Lama', 1),
+    ('Drama Lama', 2),
+    ('Drama Lama', 3),
+    ('The office dudes and dudines', 1),
+    ('The office dudes and dudines', 2),
+    ('The office dudes and dudines', 3),
+    ('Anime Chat', 1),
+    ('Anime Chat', 2),
+    ('Anime Chat', 3),
+    ('Secrets', 1);
+EOF
+)
+
+echo "$CHATUSER" | docker exec -i mysql mysql

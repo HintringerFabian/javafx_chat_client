@@ -50,4 +50,8 @@ public class RegisterView extends LoginView {
 
 		return formLayout;
 	}
+
+	public String getFullName() {
+		return nameField.getText();
+	}
 }
