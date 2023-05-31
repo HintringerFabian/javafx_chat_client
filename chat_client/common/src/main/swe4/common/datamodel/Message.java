@@ -1,21 +1,20 @@
 package swe4.common.datamodel;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
-import static swe4.common.datamodel.Utils.hashString;
+import static swe4.common.Utils.hashString;
 
 public class Message implements Serializable {
-	// TODO maybe next time dont forget to implement timestamps
-	// TODO also add them to the view
-	// TODO 26.05.2023 i forgot to add timestamps
-	// TODO 30.05.2023 guess what i forgot again
-	// TODO 31.05.2023 i forgot again
 	private final User user;
 	private final String message;
+	//Timestamp datatype is compatible with SQL
+	private final Timestamp timestamp;
 
 	public Message(User username, String message) {
 		this.user = username;
 		this.message = message;
+		this.timestamp = new Timestamp(System.currentTimeMillis());
 	}
 
 	public User getUser() {
@@ -38,5 +37,13 @@ public class Message implements Serializable {
 	@Override
 	public int hashCode() {
 		return hashString(user.getUsername()) + hashString(message);
+	}
+
+	public Timestamp getTimestamp() {
+		return timestamp;
+	}
+
+	public String getTimestampString(String format) {
+		return timestamp.toLocalDateTime().format(java.time.format.DateTimeFormatter.ofPattern(format));
 	}
 }

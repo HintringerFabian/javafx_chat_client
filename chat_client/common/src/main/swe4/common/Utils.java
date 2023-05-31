@@ -1,4 +1,4 @@
-package swe4.common.datamodel;
+package swe4.common;
 
 public class Utils {
 	public static int hashString(String str) {

@@ -1,6 +1,7 @@
 package swe4.client.view;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -65,6 +66,11 @@ public class LoginView extends Application {
 		} catch (Exception e) {
 			System.out.println("Error loading stylesheet: " + e.getMessage());
 		}
+
+		loginStage.setOnCloseRequest(e -> {
+			Platform.exit();
+			System.exit(0);
+		});
 
 		loginStage.setScene(scene);
 		loginStage.show();

@@ -2,7 +2,7 @@ package swe4.common.datamodel;
 
 import java.io.Serializable;
 
-import static swe4.common.datamodel.Utils.hashString;
+import static swe4.common.Utils.hashString;
 
 public class User implements Serializable {
 	private final String username;

@@ -81,6 +81,10 @@ public class ChatClientView extends Application {
 			if (ButtonType.NO.equals(result)) {
 				// consume event i.e. ignore close request
 				event.consume();
+			} else {
+				// close the application
+				Platform.exit();
+				System.exit(0);
 			}
 		});
 
@@ -229,17 +233,20 @@ public class ChatClientView extends Application {
 				} else {
 					// Create a custom layout for each chat item
 					HBox chatItem = new HBox();
-					chatItem.setSpacing(10);
-					chatItem.setAlignment(Pos.CENTER_LEFT);
 
-					Text nameText = new Text(item.getName());
+					var chatName = item.getName();
+					var maxlength = 28;
+					if (chatName.length() > maxlength) {
+						chatName = chatName.substring(0, maxlength) + "...";
+					}
+
+					TextFlow nameText = new TextFlow(new Text(chatName));
 					nameText.setStyle("-fx-font-weight: bold;");
 					HBox.setHgrow(nameText, Priority.ALWAYS);
 
 					// Create the three dots button
 					Button optionsButton = new Button("⋯"); // Three dots character
 					optionsButton.setId("options-button");
-					optionsButton.setAlignment(Pos.CENTER_RIGHT);
 
 					// Create the popup menu
 					ContextMenu contextMenu = new ContextMenu();
@@ -265,7 +272,7 @@ public class ChatClientView extends Application {
 					// Show the popup menu when the optionsButton is clicked
 					optionsButton.setOnAction(event -> contextMenu.show(optionsButton, Side.BOTTOM, 0, 0));
 
-					chatItem.getChildren().addAll(nameText, new Region(), optionsButton);
+					chatItem.getChildren().addAll(nameText, optionsButton);
 					setGraphic(chatItem);
 				}
 			}
@@ -346,11 +353,25 @@ public class ChatClientView extends Application {
 					setGraphic(null);
 				} else {
 					// Create a custom layout for each chat message
-					VBox messagePane = new VBox();
-					TextFlow textFlow = new TextFlow(new Text(item.getUser().getUsername() + ": " + item.getMessage()));
+					VBox message = new VBox();
 
-					messagePane.getChildren().addAll(textFlow);
-					setGraphic(messagePane);
+					var name = new TextFlow(new Text(item.getUser().getUsername()));
+
+					name.setStyle("-fx-font-weight: bold;");
+
+					HBox textAndTimeStamp = new HBox();
+					var textFlow = new TextFlow(new Text(item.getMessage()));
+
+					// get a textflow and add a timestamp to it
+					var timestamp = new TextFlow(new Text(item.getTimestampString("hh:mm")));
+
+					HBox.setHgrow(textFlow, Priority.ALWAYS);
+
+					textAndTimeStamp.getChildren().addAll(textFlow, timestamp);
+
+					message.getChildren().addAll(name, textAndTimeStamp);
+
+					setGraphic(message);
 				}
 			}
 		});
