@@ -115,6 +115,23 @@ public class ChatDao implements ChatServer {
 		chats.put(chat.getName(), chat);
 
 		sendNewChat(chat);
+
+		var notification = "New chat: " + chat.getName() + " was created.";
+		notifyUsers(notification);
+	}
+
+	public void notifyUsers(String notification) {
+		clients.values().forEach(client -> {
+			tryHandle(() -> client.handleNotificationFromServer(notification), null, client);
+		});
+	}
+
+	public void notifyUsersExcept(User user, String notification) {
+		clients.entrySet().stream()
+				.filter(entry -> !entry.getKey().equals(user))
+				.forEach(entry -> {
+					tryHandle(() -> entry.getValue().handleNotificationFromServer(notification), null, entry.getValue());
+				});
 	}
 
 	@Override
@@ -178,6 +195,9 @@ public class ChatDao implements ChatServer {
 			users.add(user);
 
 			sendNewChat(chat, user);
+
+			var notification = "User " + user.getUsername() + " joined chat " + chat.getName();
+			notifyUsersExcept(user, notification);
 		}
 	}
 

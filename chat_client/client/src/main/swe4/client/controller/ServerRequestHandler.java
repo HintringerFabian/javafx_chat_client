@@ -28,4 +28,9 @@ public class ServerRequestHandler implements ServerEventHandler, Serializable {
 	public void handleNewMessageFromServer(Chat chat, Message message) throws RemoteException {
 		controller.handleNewMessageFromServer(chat, message);
 	}
+
+	@Override
+	public void handleNotificationFromServer(String notification) {
+		controller.handleNotificationFromServer(notification);
+	}
 }

@@ -290,4 +290,10 @@ public class ChatViewController implements ViewEventHandler, Serializable {
 			});
 		}
 	}
+
+	public void handleNotificationFromServer(String notification) {
+		Platform.runLater(() -> {
+			view.showToast(notification);
+		});
+	}
 }
